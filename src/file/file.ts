@@ -5,10 +5,3 @@ export class File{
 
     public pack(){}
 }
-
-export class XmlFile extends File{
-    protected root? : Xml;
-    constructor(path: string, public statement: boolean=true){
-        super(path);
-    }
-}
