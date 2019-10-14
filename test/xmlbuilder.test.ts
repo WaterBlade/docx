@@ -27,6 +27,10 @@ describe('simple xml', ()=>{
     it('test change attribute', ()=>{
         xml.attr('w:i', false);
         expect(xml.toString()).to.equal('<w:run w:i=false>Hello world<\\w:run>');
+    });
+    it('test number text', ()=>{
+        xml.text(1);
+        expect(xml.toString()).to.equal('<w:run w:i=false>1<\\w:run>');
     })
 });
 

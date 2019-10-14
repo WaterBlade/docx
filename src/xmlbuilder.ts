@@ -13,8 +13,8 @@ export class Xml{
         return this;
     }
 
-    public text(txt: string): Xml{
-        this._text = txt;
+    public text(txt: string | number | boolean): Xml{
+        this._text = `${txt}`;
         return this;
     }
 
