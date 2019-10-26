@@ -8,8 +8,18 @@ export class Xml{
         this._tagName = tagName;
     }
 
-    public child(ele: Xml): Xml{
-        this._elements.push(ele);
+    public get last(){
+        return this._elements[this._elements.length-1]
+    }
+
+    public get length(){
+        return this._elements.length;
+    }
+
+    public child(...ele: Xml[]): Xml{
+        for(const item of ele){
+            this._elements.push(item)
+        }
         return this;
     }
 
@@ -25,16 +35,16 @@ export class Xml{
 
     public toString(): string{
         if (this._elements.length === 0 && this._text === ''){
-            return `<${this._tagName}${this.attributesString()}\\>`;
+            return `<${this._tagName}${this.attributesString()}/>`;
         } else{
-            return `<${this._tagName}${this.attributesString()}>${this.elementsString()}${this.textString()}<\\${this._tagName}>`
+            return `<${this._tagName}${this.attributesString()}>${this.elementsString()}${this.textString()}</${this._tagName}>`
         }
     }
 
     private attributesString(): string{
         let attrs: string = '';
         for (let key in this._attributes){
-            attrs += ` ${key}=${this._attributes[key]}`;
+            attrs += ` ${key}="${this._attributes[key]}"`;
         }
         return attrs
     }

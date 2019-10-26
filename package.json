@@ -2,21 +2,31 @@
   "name": "docx",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/**/*.ts"
+    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/**/*.ts",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@types/file-saver": "^2.0.1",
+    "@types/jszip": "^3.1.6",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.2"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.11",
+    "@types/webpack": "^4.39.5",
     "chai": "^4.2.0",
     "mocha": "^6.2.1",
+    "ts-loader": "^6.2.1",
     "ts-node": "^8.4.1",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
   }
 }

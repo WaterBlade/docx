@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="../build/index.js"></script>
+        <style>
+            .hidden{
+                display:none;
+            }
+            .show{
+                display:inline-block;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <h1>DOCX browser Word document generation</h1>
+
+        <button id="generate" type="button" onclick="generate()">Click to generate</button>
+
+        <script>
+            function generate(){
+                const doc = new docx.DocXBuilder();
+                doc.heading(1,'hello');
+                doc.heading(2,'hello2');
+                doc.paragraph('hello world');
+                doc.buildBlob().then(blob=>{
+                    saveAs(blob, 'text.docx');
+                })
+            }
+
+        </script>
+    </body>
+</html>
