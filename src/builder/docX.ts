@@ -1,215 +1,41 @@
-import {Xml} from "./xmlbuilder";
 import JSZip from "jszip";
+
+import {Catalog, Content, Cover} from "../component";
+import {Document, Footnotes, Header, Relationships} from "../root";
 
 interface IFile{
     path: string,
     content: string
 }
 
-export class DocXBuilder{
-    private _docx: DocX = new DocX();
-    private _currentBuilder?: Builder;
+export class DocX{
+    public relationships = new Relationships();
+    public document = new Document();
+    public footnotes = new Footnotes();
+    public header = new Header();
 
-    private colseCurrentBuilder(){
-        if(this._currentBuilder){
-            this._currentBuilder.close();
-        }
-    }
-
-    private switchBuilder(newBuilder: Builder){
-        this.colseCurrentBuilder();
-        this._currentBuilder = newBuilder;
-    }
-
-    public async buildBlob(){
-        this.colseCurrentBuilder();
-
-        return await this._docx.buildBlob();
-    }
-
-    public paragraph(text?: string): ParagraphBuilder{
-        const b = new ParagraphBuilder(this._docx);
-        this.switchBuilder(b);
-
-        if(text){
-            b.text(text);
-        }
-
-        return b
-    }
-
-    public heading(level : number = 1, text?: string){
-
-        const b = new HeadingBuilder(this._docx, level);
-        this.switchBuilder(b);
-
-        if(text){
-            b.text(text);
-        }
-        return b;
-    }
-}
-
-class Builder{
-    public close(){}
-}
-
-class ParagraphBuilder extends Builder{
-    private _paragraph: Xml = new Xml('w:p');
-
-    constructor(private _docx : DocX){
-        super();
-        this._docx.content.push(this._paragraph);
-    }
-
-    public text(str: string): ParagraphBuilder{
-
-        this._paragraph.child(
-            new Xml('w:r')
-                .child(new Xml('w:t')
-                    .text(str))
-        );
-        return this;
-    }
-}
-
-class HeadingBuilder extends Builder{
-    private _contentHeading: Xml = new Xml('w:p');
-    private _catalogHeading: Xml = new Xml('w:hyperlink');
-    private _markId: number;
-    private _mark: string;
-
-    constructor(private _docx: DocX, private _level: number){
-        super();
-        const cnt = this._contentHeading;
-        const cat = new Xml('w:p');
-        this._docx.content.push(cnt);
-        this._docx.catalog.push(cat);
-
-        this._markId = this._docx.markId;
-        this._mark = `_Mark${this._markId}`
-
-        cnt
-        .child(
-            new Xml('w:pPr')
-            .child(
-                new Xml('w:pStyle')
-                .attr('w:val', this._level)
-            ),
-            new Xml('w:bookmarkStart')
-            .attr('w:id', this._markId)
-            .attr('w:name', this._mark)
-        );
-
-        if(this._level <= 3){
-            cat
-            .child(
-                new Xml('w:pPr')
-                .child(
-                    new Xml('w:pStyle')
-                    .attr('w:val', this._level*10),
-                    new Xml('w:tabs')
-                    .child(
-                        new Xml('w:tab')
-                        .attr('w:val', 'left')
-                        .attr('w:pos', 420+630*(this._level-1)),
-                        new Xml('w:tab')
-                        .attr('w:val', 'right')
-                        .attr('w:leader', 'dot')
-                        .attr('w:pos', 7486)
-                    ),
-                    new Xml('w:rPr')
-                    .child(
-                        new Xml('w:noProof'),
-                        new Xml('w:rStyle')
-                        .attr('w:val', 'a3')
-                    )
-                )
-            )
-
-            if(this._docx.catalog.length === 1){
-                cat
-                .child(
-                    new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-                    new Xml('w:r').child(new Xml('w:instrText').text('TOC \\o "1-3" \\h \\z \\u')),
-                    new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate'))
-                )
-            }
-
-            cat
-            .child(
-                this._catalogHeading
-                .attr('w:anchor', this._mark)
-                .attr('w:history', 1)
-                .child(
-                    new Xml('w:r')
-                    .child(
-                        new Xml('w:t')
-                        .text(this._docx.computeCatalogCode(this._level))
-                    ),
-                    new Xml('w:r').child(new Xml('w:tab'))
-                )
-            );
-        }
-    }
-
-    public close(){
-        const cnt = this._contentHeading;
-        const cat = this._catalogHeading;
-
-        cnt
-        .child(
-            new Xml('w:bookmarkEnd')
-            .attr('w:id', this._markId)
-        );
-
-        if(this._level <= 3){
-            cat
-            .child(
-                new Xml('w:r').child(new Xml('w:tab')),
-                new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-                new Xml('w:r').child(new Xml('w:instrText').attr('xml:space', 'preserve').text(` PAGEREF ${this._mark} \\h `)),
-                new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate')),
-                new Xml('w:r').child(new Xml('w:t').text(0)),
-                new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end'))
-            );
-        }
-    }
-
-    public text(str: string): HeadingBuilder{
-        for (const h of [this._contentHeading, this._catalogHeading])
-        {
-            h
-            .child(
-                new Xml('w:r')
-                .child(
-                    new Xml('w:t').text(str)
-                )
-            )
-        }
-        return this;
-    }
-}
-
-class DocX{
-
-    public cover: Xml[]=[];
-    public catalog: Xml[]=[];
-    public content: Xml[] = [];
-
-    public relationships = new Xml('Relationships');
-    public body = new Xml('w:body');
-    public document = new Xml('w:document');
-    public footnotes = new Xml('w:footnotes');
-    public header = new Xml('w:hdr');
+    public cover?: Cover;
+    public catalog?: Catalog;
+    public content: Content = new Content(
+        this.relationships.HeaderRelationshipId.symbol,
+        this.relationships.FooterRelationshipId.symbol);
 
     private _markId = 1;
     private _catalogCode: number[] = []
 
-    public get markId(){
+    get markId(){
         const id = this._markId;
+        const symbol = `_Mark${id}`
         this._markId += 1;
-        return id;
+        return {id, symbol};
+    }
+
+    get RelationshipId(){
+        return this.relationships.RelationshipId;
+    }
+
+    get FootnoteId(){
+        return this.footnotes.FootnoteId;
     }
 
     public computeCatalogCode(level: number): string{
@@ -245,184 +71,13 @@ class DocX{
 
     private process_roots(): void{
 
-        //处理节点
-        this.relationships
-        .attr('xmlns', 'http://schemas.openxmlformats.org/package/2006/relationships')
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId1')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme')
-            .attr('Target', 'theme/theme1.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId2')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/webSettings')
-            .attr('Target', 'webSettings.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId3')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable')
-            .attr('Target', 'fontTable.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId4')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings')
-            .attr('Target', 'settings.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId5')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles')
-            .attr('Target', 'styles.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId6')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/endnotes')
-            .attr('Target', 'endnotes.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId7')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes')
-            .attr('Target', 'footnotes.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId8')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/customXml')
-            .attr('Target', '../customXml/item1.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId9')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering')
-            .attr('Target', 'numbering.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId10')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer')
-            .attr('Target', 'footer1.xml'))
-        .child(new Xml('Relationship')
-            .attr('Id', 'rId11')
-            .attr('Type', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/header')
-            .attr('Target', 'header1.xml'))
-        
-
-        this.document
-        .child(this.body)
-        .attr('xmlns:ve', 'http://schemas.openxmlformats.org/markup_compatibility/2006')
-        .attr('xmlns:o', 'urn:schemas-microsoft-com:office:office')
-        .attr('xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')
-        .attr('xmlns:m', 'http://schemas.openxmlformats.org/officeDocument/2006/math')
-        .attr('xmlns:v', 'urn:schemas-microsoft-com:vml')
-        .attr('xmlns:wp', 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing')
-        .attr('xmlns:w10', 'urn:schemas-microsoft-com:office:word')
-        .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
-        .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml');
-
-        this.footnotes
-        .attr('xmlns:ve', 'http://schemas.openxmlformats.org/markup_compatibility/2006')
-        .attr('xmlns:o', 'urn:schemas-microsoft-com:office:office')
-        .attr('xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')
-        .attr('xmlns:m', 'http://schemas.openxmlformats.org/officeDocument/2006/math')
-        .attr('xmlns:v', 'urn:schemas-microsoft-com:vml')
-        .attr('xmlns:wp', 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing')
-        .attr('xmlns:w10', 'urn:schemas-microsoft-com:office:word')
-        .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
-        .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml')
-        .child(new Xml('w:footnote')
-            .attr('w:type', 'separator')
-            .attr('w:id', '0')
-            .child(new Xml('w:p')
-                .child(new Xml('w:r')
-                    .child(new Xml('w:separator')))))
-        .child(new Xml('w:footnote')
-            .attr('w:type', 'continuationSeparator')
-            .attr('w:id', '1')
-            .child(new Xml('w:p')
-                .child(new Xml('w:r')
-                    .child(new Xml('w:continuationSeparator')))));
-        
-
-        this.header
-        .attr('xmlns:ve', 'http://schemas.openxmlformats.org/markup_compatibility/2006')
-        .attr('xmlns:o', 'urn:schemas-microsoft-com:office:office')
-        .attr('xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')
-        .attr('xmlns:m', 'http://schemas.openxmlformats.org/officeDocument/2006/math')
-        .attr('xmlns:v', 'urn:schemas-microsoft-com:vml')
-        .attr('xmlns:wp', 'http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing')
-        .attr('xmlns:w10', 'urn:schemas-microsoft-com:office:word')
-        .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
-        .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml');
-
-        for(const item of this.cover){
-            this.body.child(item);
+        if(this.cover){
+            this.document.child(this.cover);
         }
-        // 目录部分
-        if (this.catalog.length > 0){
-            // 目录首部
-            this.body
-            .child(
-                new Xml('w:p')
-                .child(
-                    new Xml('w:pPr').child(new Xml('w:jc').attr('w:val', 'center'))
-                )
-                .child(
-                    new Xml('w:r')
-                    .child(
-                        new Xml('w:rPr').child(
-                            new Xml('w:b'),
-                            new Xml('w:sz').attr('w:val', 32)
-                        )
-                    )
-                    .child(
-                        new Xml('w:t').text('目录')
-                    )
-                )
-            )
-            // 目录中部
-            for(const xml of this.catalog){
-                this.body.child(xml);
-            }
-            // 目录尾部
-            this.body
-            .child(
-                new Xml('w:p').child(new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end')))
-            )
-            .child(
-                new Xml('w:p')
-                .child(
-                    new Xml('w:pPr')
-                    .child(
-                        new Xml('w:sectPr')
-                        .child(
-                            new Xml('w:pgSz').attr('w:w', 11096).attr('w:h', 16838),
-                            new Xml('w:pgMar')
-                            .attr('w:top', 1440)
-                            .attr('w:right', 1800)
-                            .attr('w:bottom', 1440)
-                            .attr('w:left', 1800)
-                            .attr('w:footer', 992)
-                            .attr('w:gutter', 0),
-                            new Xml('w:cols').attr('w:space', 425),
-                            new Xml('w:docGrid')
-                            .attr('w:type', 'lines')
-                            .attr('w:linePitch', 312)
-                        )
-                    )
-                )
-            )
+        if(this.catalog){
+            this.document.child(this.catalog);
         }
-        // 正文部分
-        for(const item of this.content){
-            this.body.child(item);
-            // 文档尾部
-        }
-        this.body
-        .child(
-            new Xml('w:sectPr')
-            .child(
-                new Xml('w:headerReference').attr('w:type', 'default').attr('r:id', 'rId11'),
-                new Xml('w:footerReference').attr('w:type', 'default').attr('r:id', 'rId10'),
-                new Xml('w:pgSz').attr('w:w', 11906).attr('w:h', 16838),
-                new Xml('w:pgMar')
-                .attr('w:top', 1440)
-                .attr('w:right', 1800)
-                .attr('w:bottom', 1440)
-                .attr('w:left', 1800)
-                .attr('w:footer', 992)
-                .attr('w:gutter', 0),
-                new Xml('w:pgNumType').attr('w:start', 1),
-                new Xml('w:cols').attr('w:space', 425),
-                new Xml('w:docGrid').attr('w:type', 'lines').attr('w:linePitch', 312) 
-            )
-        )
+        this.document.child(this.content);
 
     }
 

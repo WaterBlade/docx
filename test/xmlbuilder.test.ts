@@ -1,4 +1,4 @@
-import {Xml} from '../src/xmlbuilder';
+import {Xml} from '../src/xml';
 
 const {
     describe,

@@ -24,6 +24,7 @@
                 doc.heading(1,'hello');
                 doc.heading(2,'hello2');
                 doc.paragraph('hello world');
+                doc.paragraphBuilder().text('world hello').footnote('reversed');
                 doc.buildBlob().then(blob=>{
                     saveAs(blob, 'text.docx');
                 })
