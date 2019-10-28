@@ -5,4 +5,5 @@ export * from "./cover";
 export * from "./footnote";
 export * from "./headingInCatalog";
 export * from "./headingInContent";
+export * from "./math";
 export * from "./paragraph";

@@ -4,10 +4,19 @@ import {Xml} from "../../xml";
 export class Composite implements IComponent{
     protected components: IComponent[] = [];
 
-    public child(item: IComponent): Composite{
-        this.components.push(item);
+    constructor(...items: IComponent[]){
+        this.components = items;
+    }
+
+    public child(...items: IComponent[]): Composite{
+        for (const i of items){this.components.push(i)}
         return this;
     }
 
-    public toXml(root: Xml){}
+    public toXml(root: Xml){
+        for (const item of this.components){
+            item.toXml(root);
+        }
+    }
+
 }

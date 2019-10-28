@@ -21,10 +21,23 @@
         <script>
             function generate(){
                 const doc = new docx.DocXBuilder();
+                const a = new docx.Variable('a');
+                const b = new docx.Variable('b');
+                const c = new docx.Variable('c');
+                a.value = 3;
+                b.value = 2;
+                c.value = 1;
                 doc.heading(1,'hello');
                 doc.heading(2,'hello2');
                 doc.paragraph('hello world');
-                doc.paragraphBuilder().text('world hello').footnote('reversed');
+                doc.paragraphBuilder()
+                .text('world hello')
+                .footnote('reversed')
+                .formula(a, b.add(c))
+                .text('可以计算得到:')
+                .variableValue(a)
+                .text('计算过程如下：')
+                .formulaValue(a, b.add(c));
                 doc.buildBlob().then(blob=>{
                     saveAs(blob, 'text.docx');
                 })
