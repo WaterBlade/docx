@@ -1,11 +1,16 @@
 import {Xml} from "../../xml";
-import {IComponent} from "../component";
+import { IXml } from "../../IXml";
 
-export class MathText implements IComponent{
+export class MathText implements IXml{
     constructor(
         private text: string|number,
-        private options?: {sty?:string, align?:boolean, color?: string}
+        private options: {sty?:string, align?:boolean, color?: string}={}
     ){}
+
+    public setAlign(align: boolean=true){
+        this.options.align = align;
+        return this;
+    }
 
     public toXml(root: Xml){
         const run = new Xml('m:r');

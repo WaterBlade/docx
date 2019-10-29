@@ -1,14 +1,18 @@
-import {IComponent} from "../component";
+import { IXml } from "../../IXml";
 import {Xml} from "../../xml";
 
-export class Composite implements IComponent{
-    protected components: IComponent[] = [];
+export class Composite implements IXml{
+    protected components: IXml[] = [];
 
-    constructor(...items: IComponent[]){
+    get length(){
+        return this.components.length;
+    }
+
+    constructor(...items: IXml[]){
         this.components = items;
     }
 
-    public child(...items: IComponent[]): Composite{
+    public child(...items: IXml[]): Composite{
         for (const i of items){this.components.push(i)}
         return this;
     }

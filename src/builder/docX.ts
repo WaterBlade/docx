@@ -1,5 +1,3 @@
-import JSZip from "jszip";
-
 import {Catalog, Content, Cover} from "../component";
 import {Document, Footnotes, Header, Relationships} from "../root";
 
@@ -50,23 +48,27 @@ export class DocX{
 
     }
 
-    public async buildBlob(){
+    public async saveBlob(path: string='example.docx'){
 
         this.process_roots();
         const files = this.generate_files();
 
+        const {default: JSZip} = await import('jszip');
+        const FileSaver = await import('file-saver');
+
         const zip = new JSZip();
-        for (let file of files){
+        for (let file of files) {
             zip.file(file.path, file.content);
         }
-        
+
         const blob = await zip.generateAsync({
-            type:"blob",
-            mimeType:"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            type: "blob",
+            mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             compression: "DEFLATE"
         })
 
-        return blob;
+        FileSaver.saveAs(blob, path);
+
     }
 
     private process_roots(): void{

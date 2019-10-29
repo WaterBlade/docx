@@ -1,8 +1,8 @@
 import {Xml} from "../../xml";
-import {IComponent} from "../component";
+import { IXml } from "../../IXml";
 
 
-export class FootnoteMark implements IComponent{
+export class FootnoteMark implements IXml{
     constructor(
         private id: number
     ){}

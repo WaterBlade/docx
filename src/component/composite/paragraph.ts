@@ -11,8 +11,8 @@ export class Paragraph extends Composite{
         .child(
             new Xml('w:pPr')
             .child(
-                new Xml('w:spacing').attr('w:before', 156).attr('w:after', 156),
-                new Xml('w:ind').attr('w:firstLine', 420)
+                new Xml('w:spacing').attr('w:before', 0).attr('w:after', 0).attr('w:line', 360),
+                new Xml('w:ind').attr('w:firstLineChars', 200)
             )
         );
         

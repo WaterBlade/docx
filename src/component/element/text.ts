@@ -1,7 +1,7 @@
 import {Xml} from "../../xml";
-import {IComponent} from "../component";
+import { IXml } from "../../IXml";
 
-export class Text implements IComponent{
+export class Text implements IXml{
 
     constructor(
         private text: string,

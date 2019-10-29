@@ -1,6 +1,6 @@
-import {MathText, Composite, IComponent, Paragraph, MathInline} from "../component";
+import {MathText, Composite, Paragraph, MathInline} from "../component";
 import { DocX } from "./docX";
-import {EInquality, Expression, Variable} from "./math";
+import { Expression, Var, Equation, EqualSymbol, IQuantative} from "./math";
 
 
 export class MathInlineBuilder{
@@ -9,24 +9,11 @@ export class MathInlineBuilder{
         this.paragraph.child(this.mathInline);
     }
 
-    public equation(left: Expression, right: Expression, operator?: EInquality){
-        let oper = '=';
-        switch(operator){
-            case EInquality.Lesser: oper = '<'; break;
-            case EInquality.LesserOrEqual: oper = '≤'; break;
-            case EInquality.NotEqual: oper = '≠'; break;
-            case EInquality.Greater: oper = '>'; break;
-            case EInquality.GreaterOrEqual: oper = '≥'; break;
-        };
-    
-        this.mathInline.child(
-            left.toVar(),
-            new MathText(oper, {sty: 'p'}),
-            right.toVar()
-        )
+    public equation(equation: Equation){
+        this.mathInline.child(equation.toVar());
     }
 
-    public formula(left: Variable, right: Expression){
+    public formula(left: Var, right: Expression){
         this.mathInline.child(
             left.toVar(),
             new MathText('=', {sty: 'p'}),
@@ -38,54 +25,32 @@ export class MathInlineBuilder{
         this.mathInline.child(left.toVar());
     }
 
-    public variable(left: Variable){
+    public variable(left: Var){
         this.mathInline.child(left.toVar());
     }
 
-    public equationValue(
-        left: Expression, leftVariable: Variable,
-        right: Expression, rightVariable: Variable,
-        testMode: EInquality, tolerance: number=0.001
-    ){
-        if(leftVariable.value !== undefined && rightVariable.value !== undefined){
-            const delta = leftVariable.value - rightVariable.value;
-
-            let oper = '';
-            switch(testMode){
-                case EInquality.Lesser:
-                    oper = delta < 0 ? '<' : '≥' ; 
-                    break;
-                case EInquality.LesserOrEqual:
-                    oper = delta <= 0 ? '≤' : '>' ;
-                    break;
-                case EInquality.Equal:
-                case EInquality.NotEqual:
-                    oper = delta * delta < tolerance * tolerance ? '=' : '≠';
-                    break;
-                case EInquality.Greater:
-                    oper = delta > 0 ? '>' : '≤';
-                    break;
-                case EInquality.GreaterOrEqual:
-                    oper = delta >= 0 ? '≥' : '<';
-                    break; 
-            }
-
-            this.mathInline
-            .child(
-                left.toVar(),
-                new MathText('=', {sty: 'p'}),
-                leftVariable.toNum(),
-                new MathText(oper, {sty: 'p'}),
-                right.toVar(),
-                rightVariable.toNum()
-            );
-        } else {
-            throw Error(`Unasigned Variable: ${leftVariable} or ${rightVariable}`);
+    public equationValue(equation: Equation, option: IQuantative={}){ 
+        const left = equation.Left;
+        const right = equation.Right;
+        
+        this.mathInline.child(left.toVar(), EqualSymbol)
+        if(!(left instanceof Var)){
+            this.mathInline.child(left.toNum(), EqualSymbol);
         }
+        this.mathInline.child(
+            left.toResult(option),
+            equation.EqualitySymbol,
+            right.toVar(),
+            EqualSymbol
+        );
+        if(!(right instanceof Var)){
+            this.mathInline.child(right.toNum(), EqualSymbol);
+        }
+        this.mathInline.child(right.toResult(option));
 
     }
 
-    public formulaValue(left: Variable, right: Expression){
+    public formulaValue(left: Var, right: Expression){
         this.mathInline.child(
             left.toVar(),
             new MathText('=', {sty:'p'}),
@@ -93,25 +58,25 @@ export class MathInlineBuilder{
             new MathText('=', {sty:'p'}),
             right.toNum(),
             new MathText('=', {sty:'p'}),
-            left.toNum()
+            left.toResult()
         );
     }
 
-    public expressionValue(left: Expression, right: Variable){
+    public expressionValue(left: Expression, right: Var){
         this.mathInline.child(
             left.toVar(),
             new MathText('=', {sty:'p'}),
             left.toNum(),
             new MathText('=', {sty: 'p'}),
-            right.toNum()
+            right.toResult()
         )
     }
 
-    public variableValue(left: Variable){
+    public variableValue(left: Var){
         this.mathInline.child(
             left.toVar(),
             new MathText('=', {sty: 'p'}),
-            left.toNum()
+            left.toResult()
         )
     }
 }

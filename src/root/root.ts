@@ -1,10 +1,9 @@
-import {Xml} from "../xml";
-import {IComponent} from "../component";
+import {IXml} from "../IXml";
 
 export abstract class Root{
-    protected components: IComponent[] = [];
+    protected components: IXml[] = [];
 
-    public child(item: IComponent){
+    public child(item: IXml){
         this.components.push(item);
     }
 

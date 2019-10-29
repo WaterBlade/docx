@@ -1,10 +1,11 @@
 import {Builder} from "./builder";
 import {DocX} from "./docX";
 
-import {Paragraph, Text } from "../component";
+import {Paragraph, Text, Bookmark } from "../component";
 import { FootnoteBuilder } from "./footnoteBuilder";
-import { Variable, Expression, EInquality } from "./math";
 import { MathInlineBuilder} from "./mathInline";
+import { Equation, IQuantative, Var, Expression } from "./math";
+import { Reference } from "./reference"
 
 export class ParagraphBuilder extends Builder{
     private paragraph = new Paragraph();
@@ -28,11 +29,21 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
+    public reference(ref: Reference){
+        ref.ref(this.paragraph);
+        return this;
+    }
+
+    public bookmark(ref: Reference){
+        ref.mark(this.docx, this.paragraph)
+        return this;
+    }
+
     public mathBuilder(){
         return new MathInlineBuilder(this.docx, this.paragraph);
     }
 
-    public variable(variable: Variable){
+    public variable(variable: Var){
         this.mathBuilder().variable(variable);
         return this;
     }
@@ -41,38 +52,34 @@ export class ParagraphBuilder extends Builder{
         this.mathBuilder().expression(expression);
     }
 
-    public formula(variable: Variable, expression: Expression){
+    public formula(variable: Var, expression: Expression){
         this.mathBuilder().formula(variable, expression);
         return this;
     }
 
-    public equation(left: Expression, right: Expression, oper?: EInquality){
-        this.mathBuilder().equation(left, right, oper);
+    public equation(equation: Equation){
+        this.mathBuilder().equation(equation);
         return this;
     }
 
-    public variableValue(variable: Variable){
+    public variableValue(variable: Var){
         this.mathBuilder().variableValue(variable);
         return this;
     }
 
-    public expressionValue(expression: Expression, result: Variable){
+    public expressionValue(expression: Expression, result: Var){
         this.mathBuilder().expressionValue(expression, result);
         return this;
     }
 
-    public formulaValue(variable: Variable, expression: Expression){
+    public formulaValue(variable: Var, expression: Expression){
         this.mathBuilder().formulaValue(variable, expression);
         return this;
     }
 
-    public equationValue(
-        left: Expression, lResult: Variable,
-        right: Expression, rResult: Variable,
-        testMode: EInquality, tolerance: number=0.001
-    ){
+    public equationValue(equation: Equation, option: IQuantative={}){
         this.mathBuilder().equationValue(
-            left, lResult, right, rResult, testMode, tolerance
+            equation, option
         );
         return this;
     }

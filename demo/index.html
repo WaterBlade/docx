@@ -21,26 +21,49 @@
         <script>
             function generate(){
                 const doc = new docx.DocXBuilder();
-                const a = new docx.Variable('a');
-                const b = new docx.Variable('b');
-                const c = new docx.Variable('c');
-                a.value = 3;
+                const a = new docx.Var('a');
+                const b = new docx.Var('b');
+                const c = new docx.Var('c');
+                const d = new docx.Var('d');
+                const ref = new docx.Reference('表');
+
                 b.value = 2;
                 c.value = 1;
+                a.value = (b.value+c.value)*c.value;
+                const exp = (b.add(c)).mul(c);
                 doc.heading(1,'hello');
                 doc.heading(2,'hello2');
                 doc.paragraph('hello world');
                 doc.paragraphBuilder()
                 .text('world hello')
                 .footnote('reversed')
-                .formula(a, b.add(c))
-                .text('可以计算得到:')
+                .formula(a, exp)
+                .text('按照')
+                .reference(ref)
+                .text(',可以计算得到:')
                 .variableValue(a)
                 .text('计算过程如下：')
-                .formulaValue(a, b.add(c));
-                doc.buildBlob().then(blob=>{
-                    saveAs(blob, 'text.docx');
-                })
+                .formulaValue(a, exp);
+
+                const fm = (b.add(c).add(b)).mul(c).div(b); 
+                const def = doc.mathDefinitionBuilder();
+                def.formula(a, fm);
+                const prd = doc.mathProcedureBuilder();
+                prd.formula(a, fm);
+
+                doc.paragraphBuilder()
+                .text('计算用表')
+                .bookmark(ref)
+
+                console.log('begin def2');
+                const fm2 = docx.sin(b);
+                const def2 = doc.mathDefinitionBuilder();
+                def2.formula(a, fm2);
+                console.log('finish def2');
+                a.value = fm2.Value;
+                const prd2 = doc.mathProcedureBuilder();
+                prd2.formula(a, fm2);
+                doc.saveBlob('test.docx')
             }
 
         </script>

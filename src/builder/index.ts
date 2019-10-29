@@ -1,2 +1,3 @@
 export {DocXBuilder} from "./docXBuilder";
-export {Variable} from "./math";
+export {Reference} from "./reference";
+export * from "./math";
