@@ -1,8 +1,7 @@
-import {Xml} from "../../xml";
-import { IXml } from "../../IXml";
+import {Xml, XmlObject, E} from "../../xml";
 
 
-export class Bookmark implements IXml{
+export class Bookmark implements XmlObject{
     constructor(
         private type: string, 
         private id: number, 
@@ -13,25 +12,24 @@ export class Bookmark implements IXml{
     public toXml(root: Xml){
         const {left ,right} = this.closeSymbol;
         if (left){
-            root.child(new Xml('w:r').child(new Xml('w:t').text(left)));
+            root.push(E('w:r').push(E('w:t').text(left)));
         }
-        root
-        .child(
-            new Xml('w:bookmarkStart').attr('w:id', this.id).attr('w:name', this.symbol),
-            new Xml('w:r').child(new Xml('w:t').text(this.type)),
-            new Xml('w:fldSimple').attr('w:instr', ` STYLEREF 1 \\s`).child(new Xml('w:r').child(new Xml('w:t').text(0))),
-            new Xml('w:r').child(new Xml('w:noBreakHyphen')),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-            new Xml('w:r').child(new Xml('w:instrText').attr('xml:space', 'preserve').text('SEQ ')),
-            new Xml('w:r').child(new Xml('w:instrText').text(this.type)),
-            new Xml('w:r').child(new Xml('w:instrText').attr('xml:space', 'preserve').text(` \\* ARABIC \\s 1`)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate')),
-            new Xml('w:r').child(new Xml('w:t').text(0)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end')),
-            new Xml('w:bookmarkEnd').attr('w:id', this.id)
+        root.push(
+            E('w:bookmarkStart').attr('w:id', this.id).attr('w:name', this.symbol),
+            E('w:r').push(E('w:t').text(this.type)),
+            E('w:fldSimple').attr('w:instr', ` STYLEREF 1 \\s`).push(new Xml('w:r').push(new Xml('w:t').text(0))),
+            E('w:r').push(E('w:noBreakHyphen')),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'begin')),
+            E('w:r').push(E('w:instrText').attr('xml:space', 'preserve').text('SEQ ')),
+            E('w:r').push(E('w:instrText').text(this.type)),
+            E('w:r').push(E('w:instrText').attr('xml:space', 'preserve').text(` \\* ARABIC \\s 1`)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'separate')),
+            E('w:r').push(E('w:t').text(0)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'end')),
+            E('w:bookmarkEnd').attr('w:id', this.id)
         );
         if(right){
-            root.child(new Xml('w:r').child(new Xml('w:t').text(right)));
+            root.push(E('w:r').push(E('w:t').text(right)));
         }
     }
 

@@ -1,5 +1,6 @@
-import {MathText, SubSript, Composite, SupSript, Rad, Delimeter, Func, Div as DivComp} from "../component";
-import {IXml} from "../IXml";
+import {MathText, SubSript, SupSript, Rad, Delimeter, Func, Div as DivComp, Text} from "../component";
+import { Declaration } from "../component/composite/declaration";
+import { XmlObject, Composite } from "../xml";
 
 export const Level1Precedence = 1;
 export const Level2Precedence = 2;
@@ -25,7 +26,7 @@ export abstract class Expression{
         return NaN;
     }
 
-    public toResult(option: IQuantative={}): IXml{
+    public toResult(option: IQuantative={}): XmlObject{
         const {unit, format} = option;
         const num = format ? format(this.Value) : this.Value
         if(unit){
@@ -34,9 +35,9 @@ export abstract class Expression{
         return new MathText(num);
     }
 
-    public abstract toVar(): IXml;
+    public abstract toVar(): XmlObject;
 
-    public abstract toNum(): IXml;
+    public abstract toNum(): XmlObject;
 
     public add(right: Expression){
         return new Add(this, right);
@@ -74,19 +75,23 @@ export abstract class Expression{
 // 
 export class Var extends Expression {
     public value: number = NaN;
-    constructor(protected name: string, protected feature?: {
+    constructor(protected name: string, protected feature: {
         sub?: string;
         inform?: string;
         unit?: Expression;
-        format?: {
-            (num: number): string;
-        };
-    }) { super(TopPrecedence); }
+        format?: (num: number) => string;
+    }={}) { super(TopPrecedence); }
     get Value() {
         return this.value;
     }
     set Value(val: number){
         this.value = val;
+    }
+    get Declaration(){
+        if(this.feature.unit){
+            return new Declaration(this.toVar(), this.feature.inform, this.feature.unit.toVar())
+        }
+        return new Declaration(this.toVar(), this.feature.inform);
     }
     public toVar() {
         if (this.feature && this.feature.sub) {
@@ -138,6 +143,12 @@ export class Unit extends Var {
         return this.toVar();
     }
 }
+
+export function variable(
+    name: string, feature:{sub?: string, inform?:string, unit?:Expression, format?:(num: number)=> string}={}
+    ){return new Var(name, feature);}
+export function num(n: number){return new Num(n);}
+export function unit(name: string){return new Unit(name);}
 
 //
 // Operator

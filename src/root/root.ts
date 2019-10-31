@@ -1,10 +1,10 @@
-import {IXml} from "../IXml";
+import { XmlObject } from "../xml";
 
 export abstract class Root{
-    protected components: IXml[] = [];
+    protected xmlBuilders: XmlObject[] = [];
 
-    public child(item: IXml){
-        this.components.push(item);
+    public child(item: XmlObject){
+        this.xmlBuilders.push(item);
     }
 
     abstract toString():string;

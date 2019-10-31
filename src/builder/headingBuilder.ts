@@ -1,12 +1,13 @@
 import {Builder} from "./builder";
 import {DocX} from "./docX";
 import { HeadingInCatalog, HeadingInContent, Text, Catalog } from "../component";
-import { FootnoteBuilder } from "./footnoteBuilder";
+import { ContentInlineBuilder } from "./contentInlineBuilder";
+import { Var } from "./math";
 
 
 export class HeadingBuilder extends Builder{
-    private headingInCatalog: HeadingInCatalog;
-    private headingInContent: HeadingInContent;
+    private builderCat: ContentInlineBuilder;
+    private builderCon: ContentInlineBuilder;
     constructor(private docx : DocX, private level: number){
         super();
         let isFirst = false;
@@ -20,29 +21,44 @@ export class HeadingBuilder extends Builder{
         const code = this.docx.computeCatalogCode(this.level);
 
         // 生成目录里和正文力的标题
-        this.headingInCatalog = new HeadingInCatalog(this.level, id, symbol, code, isFirst);
-        this.headingInContent = new HeadingInContent( this.level, id, symbol);
+        const headingInCatalog = new HeadingInCatalog(this.level, id, symbol, code, isFirst);
+        const headingInContent = new HeadingInContent( this.level, id, symbol);
 
         // 将标题添加到目录及正文中
-        this.docx.catalog.child(this.headingInCatalog);
-        this.docx.content.child(this.headingInContent);
+        this.docx.catalog.push(headingInCatalog);
+        this.docx.content.push(headingInContent);
+
+        // inline内容生成器
+        this.builderCat = new ContentInlineBuilder(this.docx, headingInCatalog);
+        this.builderCon = new ContentInlineBuilder(this.docx, headingInContent);
+        
     }
 
     public text(str: string): HeadingBuilder{
-        const text = new Text(str);
-        this.headingInCatalog.child(text);
-        this.headingInContent.child(text);
+        this.builderCat.text(str);
+        this.builderCon.text(str)
         return this;
     }
 
     public footnote(str: string){
-        const b = new FootnoteBuilder(this.docx, this.headingInContent);
-        b.text(str);
+        this.builderCon.footnote(str);
         return this;
     }
 
     public footnoteBuilder(){
-        return new FootnoteBuilder(this.docx, this.headingInContent);
+        return this.builderCon.footnoteBuilder();
+    }
+
+    public variable(variable: Var){
+        this.builderCat.variable(variable);
+        this.builderCon.variable(variable);
+        return this;
+    }
+
+    public variableValue(variable: Var){
+        this.builderCat.variableValue(variable);
+        this.builderCon.variableValue(variable);
+        return this;
     }
 
 }

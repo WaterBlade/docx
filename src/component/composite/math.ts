@@ -1,266 +1,210 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
-import { IXml } from "../../IXml";
+import {Xml, XmlObject, E, XmlObjectComposite} from "../../xml";
 import { MathText } from "../element";
 
 
-export class MathInline extends Composite{
-    public toXml(root: Xml){
-        const math = new Xml('m:oMath');
-        root.child(math);
+abstract class MathObject extends XmlObject{
+    abstract toXml(root: Xml): void;
+}
 
-        for (const item of this.components){
-            item.toXml(math);
-        }
+abstract class MathComposite extends MathObject{
+    protected xmlBuilders: MathObject[]=[];
+
+    public constructor(...builders: MathObject[]){
+        super();
+        this.xmlBuilders = builders;
+    }
+    
+    public push(item: MathObject){
+        this.xmlBuilders.push(item)
+    }
+
+    public toXml(root: Xml){
+        root.build(...this.xmlBuilders);
+    }
+}
+
+
+export class MathInline extends XmlObjectComposite<MathObject>{
+    public toXml(root: Xml){
+        root.push(
+            E('m:oMath').build(...this.xmlBuilders)
+        )
     }
 } 
 
 
-export class MathPara extends Composite{
-    protected components: MathInline[] =[];
-
-    constructor(...items: MathInline[]){
-        super(...items);
-    }
-
-    public child(...items: MathInline[]){
-        for(const item of items){
-            this.components.push(item);
-        }
-        return this;
-    }
-
+export class MathPara extends XmlObjectComposite<MathInline>{
     public toXml(root: Xml){
-        const m = new Xml('m:oMathPara');
-        root.child(new Xml('w:p').child(m));
+        const mpara = root.newChild('m:oMathPara');
 
-        for(let i = 0; i < this.components.length; i++){
-            const item = this.components[i];
-            item.toXml(m);
-            if(i < this.components.length-1){
-                m.child(new Xml('w:r').child(new Xml('w:br')));
+        for(let i = 0; i < this.Length; i++){
+            mpara.build(this.xmlBuilders[i]);
+            if(i < this.Length-1){
+                mpara.push(E('w:r').push(E('w:br')));
             }
         }
     }
 }
 
-export class Div extends Composite{
-    constructor(protected left: IXml, protected right: IXml, protected type: string='bar'){
+
+export class Div extends MathObject{
+    constructor(protected left: XmlObject, protected right: XmlObject, protected type: string='bar'){
         super();
     }
 
     public toXml(root: Xml){
-        const num = new Xml('m:num');
-        const den = new Xml('m:den');
-
-        this.left.toXml(num);
-        this.right.toXml(den);
-
-        root
-            .child(
-                new Xml('m:f').child(
-                    new Xml('m:fPr').child(new Xml('m:type').attr('m:val', this.type)),
-                    num,
-                    den)
-            );
+        root.push(
+            E('m:f').push(
+                E('m:fPr').push(E('m:type').attr('m:val', this.type)),
+                E('m:num').build(this.left),
+                E('m:den').build(this.right))
+        );
     }
 }
 
 
-export class SubSup extends Composite{
-    constructor(protected base: IXml, protected sub: IXml, protected sup: IXml){
+export class SubSup extends MathObject{
+    constructor(protected base: XmlObject, protected sub: XmlObject, protected sup: XmlObject){
         super();
     }
 
     public toXml(root: Xml){
-        const base = new Xml('m:e');
-        this.base.toXml(base);
-        const sub = new Xml('m:sub');
-        const sup = new Xml('m:sup');
-        this.sub.toXml(sub);
-        this.sup.toXml(sup);
-        root.child(new Xml('m:sSubSup').child(base).child(sub).child(sup));
-
+        root.push(
+            E('m:sSubSup').push(
+                E('m:e').build(this.base),
+                E('m:sub').build(this.sub),
+                E('m:sup').build(this.sup)
+            )
+        )
     }
-
 }
 
 
-export class SubSript extends Composite{
-    constructor(protected base: IXml, protected sub: IXml){
+export class SubSript extends MathObject{
+    constructor(protected base: XmlObject, protected sub: XmlObject){
         super();
     }
 
-    public toSubSup(sup: IXml){
+    public toSubSup(sup: XmlObject){
         return new SubSup(this.base, this.sub, sup);
     }
 
     public toXml(root: Xml){
-        const base = new Xml('m:e');
-        const sub = new Xml('m:sub');
-        this.base.toXml(base);
-        this.sub.toXml(sub);
-        root.child(new Xml('m:sSub').child(base).child(sub));
+        root.push(
+            E('m:sSub').push(
+                E('m:e').build(this.base),
+                E('m:sub').build(this.sub)
+            )
+        )
     }
 }
 
-export class SupSript extends Composite{
-    constructor(protected base: IXml, protected sup: IXml){
+export class SupSript extends MathObject{
+    constructor(protected base: XmlObject, protected sup: XmlObject){
         super();
     }
 
     public toXml(root: Xml){
-        const base = new Xml('m:e');
-        const sup = new Xml('m:sup');
-        this.base.toXml(base);
-        this.sup.toXml(sup);
-        root.child(new Xml('m:sSup').child(base).child(sup));
+        root.push(
+            E('m:sSup').push(
+                E('m:e').build(this.base),
+                E('m:sup').build(this.sup)
+            )
+        )
     }
 }
 
 
-export class Rad extends Composite{
-    constructor(protected index: IXml, protected base: IXml, protected hasIndex = true){
+export class Rad extends MathObject{
+    constructor(protected index: XmlObject, protected base: XmlObject, protected hasIndex = true){
         super();
     }
 
     public toXml(root: Xml){
-        const rad = new Xml('m:rad');
-        root.child(rad);
-
-        if(this.hasIndex){
-            const index = new Xml('m:deg');
-            this.index.toXml(index);
-            rad.child(index);
-        } else {
-            rad.child(new Xml('m:radPr').child(new Xml('m:degHide').attr('m:val', 'on')));
-        }
-
-        const base = new Xml('m:e')
-        this.base.toXml(base);
-        rad.child(base);
+        root.push(
+            E('m:rad').push(
+                this.hasIndex ? 
+                E('m:deg').build(this.index) : 
+                E('m:radPr').push(E('m:degHide').attr('m:val', 'on')),
+                E('m:e').build(this.base)
+            )
+        )
     }
 }
 
 
-export class Delimeter extends Composite{
-    constructor(protected expression: IXml, protected delimeter?:{left?:string, right?:string}){
-        super(expression);
-    }
-
-    public toXml(root: Xml){
-        const d = new Xml('m:d');
-        root.child(d);
-
-        const prop = new Xml('m:dPr');
-        d.child(prop);
-
-        if(this.delimeter){
-            if(this.delimeter.left){
-                prop.child(new Xml('m:begChr').attr('m:val', this.delimeter.left));
-            }
-            if(this.delimeter.right){
-                prop.child(new Xml('m:endChr').attr('m:val', this.delimeter.right));
-
-            }
-        }
-
-        for(const item of this.components){
-            const e = new Xml('m:e');
-            d.child(e);
-            item.toXml(e);
-        }
-    }
-}
-
-
-export class Func extends Composite{
-    constructor(protected name: string, protected expression: IXml){
+export class Delimeter extends MathObject{
+    constructor(protected expression: XmlObject, protected delimeter:{left?:string, right?:string}={}){
         super();
     }
 
     public toXml(root: Xml){
-        const name = new Xml('m:fName');
-        const expression = new Xml('m:e');
-        new MathText(this.name, {sty: 'p'}).toXml(name);
-        new Delimeter(this.expression, {left:'(', right:')'}).toXml(expression);
-        root.child(new Xml('m:func').child(name).child(expression));
-
+        const {left , right} = this.delimeter;
+        root.push(
+            E('m:d').push(
+                E('m:dPr').push(
+                    left ? E('m:begChr').attr('m:val', left) : null,
+                    right ? E('m:endChr').attr('m:val', right) : null
+                ),
+                E('m:e').build(this.expression)
+            )
+        )
     }
 }
 
 
-export class NArray extends Composite{
-    constructor(protected base: IXml, protected feature: {
-        name?: string, sub?: IXml, sup?: IXml, limLoc?: string
+export class Func extends MathObject{
+    constructor(protected name: string, protected expression: XmlObject){
+        super();
+    }
+
+    public toXml(root: Xml){
+        root.push(
+            E('m:func').push(
+                E('m:fName').build(new MathText(this.name, {sty: 'p'})),
+                E('m:e').build(new Delimeter(this.expression, {left: '(', right: ')'}))
+            )
+        )
+    }
+}
+
+
+export class NArray extends MathObject{
+    constructor(protected base: XmlObject, protected feature: {
+        name?: string, sub?: XmlObject, sup?: XmlObject, limLoc?: string
     }={}){
         super();
     }
 
     public toXml(root: Xml){
-        const nary = new Xml('m:nary');
-        root.child(nary);
-        const prop = new Xml('m:naryPr');
-        nary.child(prop);
-
         const {name, sub, sup, limLoc} = this.feature
 
-        if(name){
-            prop.child(new Xml('m:chr').attr('m:val', name));
-        }
-        if(sub){
-            const subexp = new Xml('m:sub');
-            sub.toXml(subexp);
-            nary.child(subexp);
-        } else {
-            prop.child(new Xml('m:subHide').attr('m:val', 'on'));
-        }
-        if(sup){
-            const supexp = new Xml('m:sup');
-            sup.toXml(supexp);
-            nary.child(supexp);
-        } else {
-            prop.child(new Xml('m:supHide').attr('m:val', 'on'));
-        }
-        prop.child(new Xml('m:ctrlPr').child(new Xml('w:rPr').child(new Xml('w:i'))));
-
-        const e = new Xml('m:e');
-        this.base.toXml(e);
-        nary.child(e);
+        root.push(
+            E('m:nary').push(
+                E('m:naryPr').push(
+                    name ? E('m:chr').attr('m:val', name) : null,
+                    sub ? null : E('m:subHide').attr('m:val', 'on'),
+                    sup ? null : E('m:supHide').attr('m:val', 'on'),
+                    E('m:ctrlPr').push(E('w:rPr').push(E('w:i'))),
+                ),
+                sub ? E('m:sub').build(sub) : null,
+                sup ? E('m:sup').build(sup) : null,
+                E('m:e').build(this.base),
+            )
+        )
     }
 }
 
-export class EqArr extends Composite{
-    constructor(protected includedSide: {left?: boolean, right?: boolean}={}, ...eqArray: IXml[]){
+export class EqArr extends MathComposite{
+    constructor( ...eqArray: MathObject[]){
         super(...eqArray);
     }
 
     public toXml(root: Xml){
-        const arr = new Xml('m:eqArr');
-
-        for (const item of this.components){
-            const e = new Xml('m:e');
-            arr.child(e);
-            item.toXml(e);
-        }
-
-        const { left, right } = this.includedSide;
-
-        if(left || right){
-            const leftChr = left ? '{' : '';
-            const rightChr = right ? '' : '}';
-
-            root.child(new Xml('m:d').child(
-                new Xml('m:dPr')
-                .child(
-                    new Xml('m:begChr').attr('m:val', leftChr),
-                    new Xml('m:endChr').attr('m:val', rightChr)
-                ),
-                new Xml('m:e').child(arr)
-            ))
-
-        } else {
-            root.child(arr);
-        }
+        root.push(
+            E('m:eqArr').push(
+                ...this.xmlBuilders.map(m => E('m:e').build(m))
+            )
+        )
     }
 }

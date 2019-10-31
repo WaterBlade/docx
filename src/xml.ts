@@ -1,11 +1,9 @@
 export class Xml{
-    protected _tagName: string;
     protected _elements: Xml[] = [];
     protected _attributes :{[key:string] : string} = {};
     protected _text: string='';
 
-    constructor(tagName: string){
-        this._tagName = tagName;
+    constructor(protected _tagName?: string){
     }
 
     public get last(){
@@ -16,9 +14,17 @@ export class Xml{
         return this._elements.length;
     }
 
-    public child(...ele: Xml[]): Xml{
+    public newChild(tagName: string): Xml{
+        const xml = new Xml(tagName);
+        this.push(xml);
+        return xml;
+    }
+
+    public push(...ele: Array<Xml|null>): Xml{
         for(const item of ele){
-            this._elements.push(item)
+            if(item){
+                this._elements.push(item)
+            }
         }
         return this;
     }
@@ -30,6 +36,15 @@ export class Xml{
 
     public attr(key: string, value: string | number | boolean): Xml{
         this._attributes[key] = `${value}`;
+        return this;
+    }
+
+    public build(...builder: Array<XmlObject| null>):Xml{
+        for(const item of builder){
+            if(item){
+                item.toXml(this);
+            }
+        }
         return this;
     }
 
@@ -61,3 +76,42 @@ export class Xml{
         return this._text.replace(/&/, '&amp;').replace(/</, '&lt;').replace(/>/, '&gt;');
     }
 }
+
+
+export abstract class XmlObject{
+    abstract toXml(root: Xml):void;
+}
+
+
+export abstract class XmlRoot{
+    abstract toString(): string;
+}
+
+export class XmlObjectComposite<T extends XmlObject> extends XmlObject{
+    protected xmlBuilders: T[] = []
+
+    constructor(...builders: T[]){
+        super();
+        this.xmlBuilders = builders;
+    }
+
+    get Length(){
+        return this.xmlBuilders.length;
+    }
+
+    public push(...builder: T[]){
+        this.xmlBuilders.push(...builder);
+        return this;
+    }
+
+    public toXml(root: Xml){
+        for(const item of this.xmlBuilders){
+            item.toXml(root);
+        }
+    }
+
+}
+
+export class Composite extends XmlObjectComposite<XmlObject>{}
+
+export function E(tagName: string){return new Xml(tagName)}

@@ -1,18 +1,27 @@
 import {Builder} from "./builder";
 import { DocX } from "./docX";
-import { Expression, AlignEqualSymbol, Var, Equation, IQuantative} from "./math";
-import { MathPara, MathInline, MathText, EqArr, Composite} from "../component";
+import { Expression, AlignEqualSymbol, Var, Equation} from "./math";
+import { MathInline, MathText, EqArr, Definition, Delimeter} from "../component";
+import { Reference } from "./reference";
+import { Composite } from "../xml";
 
 export class MathDefinitionBuilder extends Builder{
-    protected mathPara = new MathPara();
+    protected definition: Definition;
 
-    constructor(protected docx: DocX){
+    constructor(protected docx: DocX, protected reference?: Reference){
         super();
-        this.docx.content.child(this.mathPara);
+        if(reference){
+            this.definition = new Definition(reference.generateMark(this.docx));
+            reference.Type = '式';
+        } else {
+            this.definition = new Definition(new Reference('式').generateMark(this.docx));
+        }
+        this.docx.content.push(this.definition);
+
     }
 
     public formula(variable: Var, expression: Expression){
-        this.mathPara.child(
+        this.definition.push(
             new MathInline(
                 variable.toVar(),
                 AlignEqualSymbol,
@@ -22,23 +31,23 @@ export class MathDefinitionBuilder extends Builder{
     }
 
     public conditionFormula(variable: Var, expressions: Expression[], conditions: Equation[]){
-        const array = new EqArr({left:true});
+        const array = new EqArr();
         for(let i = 0; i < expressions.length; i++){
             const exp = expressions[i];
             const cond = conditions[i];
-            array.child(new Composite(exp.toVar(), new MathText(' , '), cond.toVar()));
+            array.push(new Composite(exp.toVar(), new MathText(' , '), cond.toVar()));
         }
-        this.mathPara.child(
+        this.definition.push(
             new MathInline(
                 variable.toVar(),
                 AlignEqualSymbol,
-                array
+                new Delimeter(array)
             )
         )
     }
 
     public equation(equation: Equation){
-        this.mathPara.child(
+        this.definition.push(
             new MathInline(
                 equation.Left.toVar(),
                 equation.OriginalSymbol.setAlign(),

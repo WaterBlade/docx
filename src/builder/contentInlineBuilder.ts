@@ -1,32 +1,28 @@
 import {Builder} from "./builder";
 import {DocX} from "./docX";
 
-import {Paragraph} from "../component";
+import { Text, } from "../component";
+import { FootnoteBuilder } from "./footnoteBuilder";
+import { MathInlineBuilder} from "./mathInline";
 import { Equation, IQuantative, Var, Expression } from "./math";
 import { Reference } from "./reference"
-import { ContentInlineBuilder } from "./contentInlineBuilder";
+import { Composite } from "../xml";
 
-export class ParagraphBuilder extends Builder{
-    private builder :ContentInlineBuilder;
+export class ContentInlineBuilder extends Builder{
+    private composite = new Composite();
 
-    constructor(private docx : DocX){
+    constructor(private docx : DocX, private parentBuilder: Composite){
         super();
-        const para = new Paragraph();
-
-        para.Spacing = {before: 0, after: 0, line: 360};
-        para.IndentChar = 2;
-
-        this.docx.content.push(para);
-        this.builder = new ContentInlineBuilder(this.docx, para);
+        this.parentBuilder.push(this.composite);
     }
 
-    public text(str: string) {
-        this.builder.text(str);
+    public text(str: string){
+        this.composite.push(new Text(str))
         return this;
     }
 
     public footnoteBuilder(){
-        return this.builder.footnoteBuilder();
+        return new FootnoteBuilder(this.docx, this.composite);
     }
 
     public footnote(str: string){
@@ -35,17 +31,17 @@ export class ParagraphBuilder extends Builder{
     }
 
     public reference(ref: Reference){
-        this.builder.reference(ref);
+        this.composite.push(ref.Ref);
         return this;
     }
 
     public bookmark(ref: Reference){
-        this.builder.bookmark(ref);
+        this.composite.push(ref.generateMark(this.docx));
         return this;
     }
 
     public mathBuilder(){
-        return this.builder.mathBuilder();
+        return new MathInlineBuilder(this.docx, this.composite);
     }
 
     public variable(variable: Var){
@@ -55,7 +51,6 @@ export class ParagraphBuilder extends Builder{
 
     public expression(expression: Expression){
         this.mathBuilder().expression(expression);
-        return this;
     }
 
     public formula(variable: Var, expression: Expression){

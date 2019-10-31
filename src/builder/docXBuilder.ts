@@ -1,8 +1,11 @@
 import {ParagraphBuilder} from "./paragraphBuilder";
 import {HeadingBuilder} from "./headingBuilder";
 import {DocX} from "./docX";
-import { MathDefinitionBuilder } from "./mathDefinition";
-import { MathProcedureBuilder } from "./mathProcedure";
+import { MathDefinitionBuilder } from "./mathDefinitionBuilder";
+import { MathProcedureBuilder } from "./mathProcedureBuilder";
+import { MathDeclarationBuilder } from "./mathDeclarationBuilder";
+import { TableBuilder } from "./tableBuilder";
+import { Reference } from "./reference";
 
 
 export class DocXBuilder{
@@ -21,8 +24,16 @@ export class DocXBuilder{
         return new HeadingBuilder(this.docx, level);
     }
 
-    public mathDefinitionBuilder(){
-        return new MathDefinitionBuilder(this.docx);
+    public tableBuilder(colCount: number, ref?: Reference){
+        return new TableBuilder(this.docx, colCount, ref);
+    }
+
+    public mathDefinitionBuilder(ref?: Reference){
+        return new MathDefinitionBuilder(this.docx, ref);
+    }
+
+    public mathDeclarationBuilder(){
+        return new MathDeclarationBuilder(this.docx);
     }
 
     public mathProcedureBuilder(){

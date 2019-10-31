@@ -1,5 +1,4 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
+import {Xml, Composite} from "../../xml";
 
 
 export class Content extends Composite{
@@ -9,14 +8,12 @@ export class Content extends Composite{
     ){super()}
 
     public toXml(root: Xml){
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(root);
         }
 
-        root
-        .child(
-            new Xml('w:sectPr')
-            .child(
+        root.push(
+            new Xml('w:sectPr').push(
                 new Xml('w:headerReference').attr('w:type', 'default').attr('r:id', this.headerRelSymbol),
                 new Xml('w:footerReference').attr('w:type', 'default').attr('r:id', this.footerRelSymbol),
                 new Xml('w:pgSz').attr('w:w', 11906).attr('w:h', 16838),

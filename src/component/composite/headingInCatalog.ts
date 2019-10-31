@@ -1,5 +1,4 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
+import {Xml, E, Composite} from "../../xml";
 
 export class HeadingInCatalog extends Composite{
     constructor(
@@ -12,58 +11,50 @@ export class HeadingInCatalog extends Composite{
 
     public toXml(root: Xml): void{
         const para = new Xml('w:p');
-        root.child(para);
+        root.push(para);
 
-        para
-        .child(
-            new Xml('w:pPr')
-            .child(
-                new Xml('w:pStyle').attr('w:val', this.level*10),
-                new Xml('w:tabs')
-                .child(
-                    new Xml('w:tab').attr('w:val', 'left').attr('w:pos', 420+630*(this.level-1)),
-                    new Xml('w:tab').attr('w:val', 'right').attr('w:leader', 'dot').attr('w:pos', 8296)
+        para.push(
+            E('w:pPr').push(
+                E('w:pStyle').attr('w:val', this.level*10),
+                E('w:tabs').push(
+                    E('w:tab').attr('w:val', 'left').attr('w:pos', 420+630*(this.level-1)),
+                    E('w:tab').attr('w:val', 'right').attr('w:leader', 'dot').attr('w:pos', 8296)
                 ),
-                new Xml('w:rPr')
-                .child(
-                    new Xml('w:noProof')
-                    .child(
-                        new Xml('w:rStyle').attr('w:val', 'a3')
+                E('w:rPr').push(
+                    E('w:noProof').push(
+                        E('w:rStyle').attr('w:val', 'a3')
                     )
                 )
             )
         );
 
         if(this.isFirst){
-            para
-            .child(
-                new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-                new Xml('w:r').child(new Xml('w:instrText').text('TOC \\o "1-3" \\h \\z \\u')),
-                new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate'))
+            para.push(
+                E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'begin')),
+                E('w:r').push(E('w:instrText').text('TOC \\o "1-3" \\h \\z \\u')),
+                E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'separate'))
             );
         }
 
-        const link = new Xml('w:hyperlink');
-        para.child(link);
+        const link = E('w:hyperlink');
+        para.push(link);
 
-        link
-        .child(
-            new Xml('w:r').child(new Xml('w:t').text(this.code)),
-            new Xml('w:r').child(new Xml('w:tab'))
+        link.push(
+            E('w:r').push(E('w:t').text(this.code)),
+            E('w:r').push(E('w:tab'))
         );
 
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(link);
         }
 
-        link
-        .child(
-            new Xml('w:r').child(new Xml('w:tab')),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-            new Xml('w:r').child(new Xml('w:instrText').attr('xml:space', 'preserve').text(` PAGEREF ${this.symbol} \\h`)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate')),
-            new Xml('w:r').child(new Xml('w:t').text(0)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end'))
+        link.push(
+            E('w:r').push(E('w:tab')),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'begin')),
+            E('w:r').push(E('w:instrText').attr('xml:space', 'preserve').text(` PAGEREF ${this.symbol} \\h`)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'separate')),
+            E('w:r').push(E('w:t').text(0)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'end'))
         );
     }
 }

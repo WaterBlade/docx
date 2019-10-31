@@ -1,7 +1,6 @@
-import {Xml} from "../../xml";
-import { IXml } from "../../IXml";
+import {Xml, E, XmlObject} from "../../xml";
 
-export class Ref implements IXml{
+export class Ref implements XmlObject{
     constructor(private symbol?: string){}
 
     set Symbol(val: string){
@@ -12,14 +11,14 @@ export class Ref implements IXml{
         if(!this.symbol){
             return;
         }
-        root.child(
-            new Xml('w:r').child(new Xml('w:t').text('(')),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'begin')),
-            new Xml('w:r').child(new Xml('w:instrText').text(`REF ${this.symbol} \\h`)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'separate')),
-            new Xml('w:r').child(new Xml('w:t').text(0)),
-            new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end')),
-            new Xml('w:r').child(new Xml('w:t').text(')'))
+        root.push(
+            E('w:r').push(E('w:t').text('(')),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'begin')),
+            E('w:r').push(E('w:instrText').text(`REF ${this.symbol} \\h`)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'separate')),
+            E('w:r').push(E('w:t').text(0)),
+            E('w:r').push(E('w:fldChar').attr('w:fldCharType', 'end')),
+            E('w:r').push(E('w:t').text(')'))
         );
     }
 }

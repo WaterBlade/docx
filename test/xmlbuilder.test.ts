@@ -37,11 +37,11 @@ describe('simple xml', ()=>{
 describe('nested xml', ()=>{
     const xml = new Xml('a');
     it('should return <a><b/></a>', ()=>{
-        xml.child(new Xml('b'));
+        xml.push(new Xml('b'));
         expect(xml.toString()).to.equal('<a><b/></a>');
     });
     it('should return <a><b/><c>Hello</c></a>', ()=>{
-        xml.child(new Xml('c').text('Hello'));
+        xml.push(new Xml('c').text('Hello'));
         expect(xml.toString()).to.equal('<a><b/><c>Hello</c></a>');
     });
 });

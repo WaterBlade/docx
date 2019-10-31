@@ -21,7 +21,7 @@
         <script>
             function generate(){
                 const doc = new docx.DocXBuilder();
-                const a = new docx.Var('a');
+                const a = new docx.Var('a', {inform: '变量', unit: docx.unit('m')});
                 const b = new docx.Var('b');
                 const c = new docx.Var('c');
                 const d = new docx.Var('d');
@@ -53,7 +53,9 @@
 
                 doc.paragraphBuilder()
                 .text('计算用表')
-                .bookmark(ref)
+
+                doc.mathDeclarationBuilder()
+                .declare(a);
 
                 console.log('begin def2');
                 const fm2 = docx.sin(b);
@@ -63,6 +65,12 @@
                 a.value = fm2.Value;
                 const prd2 = doc.mathProcedureBuilder();
                 prd2.formula(a, fm2);
+
+                doc.tableBuilder(2, ref)
+                .title('计算结果表')
+                .rowData('深度', '高度')
+                .rowData('1', '2')
+                .rowData('3', '4')
                 doc.saveBlob('test.docx')
             }
 

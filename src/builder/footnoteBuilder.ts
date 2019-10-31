@@ -1,6 +1,7 @@
 import {Builder} from "./builder";
 import {DocX} from "./docX";
-import { Footnote, FootnoteMark, Composite, Text } from "../component";
+import { Footnote, FootnoteMark, Text } from "../component";
+import { Composite } from "../xml";
 
 
 export class FootnoteBuilder extends Builder{
@@ -8,14 +9,14 @@ export class FootnoteBuilder extends Builder{
     constructor(private docx: DocX, private composite: Composite){
         super();
         const id = this.docx.FootnoteId.id;
-        this.composite.child(new FootnoteMark(id));
+        this.composite.push(new FootnoteMark(id));
         
         this.footnote = new Footnote(id);
         this.docx.footnotes.child(this.footnote);
     }
 
     public text(str: string){
-        this.footnote.child(new Text(str));
+        this.footnote.push(new Text(str));
     }
 }
 

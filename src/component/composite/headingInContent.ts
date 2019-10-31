@@ -1,5 +1,4 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
+import {Xml, Composite} from "../../xml";
 
 
 export class HeadingInContent extends Composite{
@@ -11,15 +10,15 @@ export class HeadingInContent extends Composite{
 
     public toXml(root: Xml): void{
         const para = new Xml('w:p');
-        root.child(para);
+        root.push(para);
 
-        para.child(new Xml('w:pPr').child(new Xml('w:pStyle').attr('w:val', this.level)))
-        para.child(new Xml('w:bookmarkStart').attr('w:id', this.id).attr('w:name', this.symbol))
+        para.push(new Xml('w:pPr').push(new Xml('w:pStyle').attr('w:val', this.level)))
+        para.push(new Xml('w:bookmarkStart').attr('w:id', this.id).attr('w:name', this.symbol))
         
-        for (const ele of this.components){
+        for (const ele of this.xmlBuilders){
             ele.toXml(para);
         }
 
-        para.child(new Xml('w:bookmarkEnd').attr('w:id', this.id))
+        para.push(new Xml('w:bookmarkEnd').attr('w:id', this.id))
     }
 }

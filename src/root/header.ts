@@ -17,7 +17,7 @@ export class Header extends Root{
         .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
         .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml');
 
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(header);
         }
 

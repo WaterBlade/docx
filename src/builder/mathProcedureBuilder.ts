@@ -1,20 +1,20 @@
 import {Builder} from "./builder";
-import {MathInline, MathPara} from "../component";
+import {MathInline, Procedure} from "../component";
 import { DocX } from "./docX";
 import { Var, Expression, AlignEqualSymbol, EqualSymbol, Equation, IQuantative } from "./math";
 
 export class MathProcedureBuilder extends Builder{
-    protected mathPara = new MathPara();
+    protected procedure = new Procedure();
 
     constructor(protected docx: DocX){
         super();
-        this.docx.content.child(this.mathPara);
+        this.docx.content.push(this.procedure);
     }
 
     public formula(variable: Var, expression: Expression, isLong: boolean=true){
         if(isLong){
             if(variable)
-            this.mathPara.child(
+            this.procedure.push(
                 new MathInline(
                     variable.toVar(),
                     AlignEqualSymbol,
@@ -30,7 +30,7 @@ export class MathProcedureBuilder extends Builder{
                 )
             )
         } else {
-            this.mathPara.child(new MathInline(
+            this.procedure.push(new MathInline(
                 variable.toVar(),
                 AlignEqualSymbol,
                 expression.toVar(),
@@ -45,25 +45,25 @@ export class MathProcedureBuilder extends Builder{
 
     public equation(equation: Equation, option: IQuantative={}){
         const mathInline = new MathInline();
-        this.mathPara.child(mathInline);
+        this.procedure.push(mathInline);
 
         const left = equation.Left;
         const right = equation.Right;
         
-        mathInline.child(left.toVar(), EqualSymbol)
+        mathInline.push(left.toVar(), EqualSymbol)
         if(!(left instanceof Var)){
-            mathInline.child(left.toNum(), EqualSymbol);
+            mathInline.push(left.toNum(), EqualSymbol);
         }
-        mathInline.child(
+        mathInline.push(
             left.toResult(option),
             equation.EqualitySymbol,
             right.toVar(),
             EqualSymbol
         );
         if(!(right instanceof Var)){
-            mathInline.child(right.toNum(), EqualSymbol);
+            mathInline.push(right.toNum(), EqualSymbol);
         }
-        mathInline.child(right.toResult(option));
+        mathInline.push(right.toResult(option));
 
     }
 }

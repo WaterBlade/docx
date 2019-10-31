@@ -1,36 +1,27 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
+import {Xml, Composite} from "../../xml";
 
 
 export class Catalog extends Composite{
     public toXml(root: Xml){
-        root
-        .child(
-            new Xml('w:p')
-            .child(
-                new Xml('w:pPr').child(new Xml('w:jc').attr('w:val', 'center')),
-                new Xml('w:r')
-                .child(
-                    new Xml('w:rPr').child(new Xml('w:b'), new Xml('w:sz').attr('w:val', 32)),
+        root.push(
+            new Xml('w:p').push(
+                new Xml('w:pPr').push(new Xml('w:jc').attr('w:val', 'center')),
+                new Xml('w:r').push(
+                    new Xml('w:rPr').push(new Xml('w:b'), new Xml('w:sz').attr('w:val', 32)),
                     new Xml('w:t').text('目录')
                 )
             )
         );
 
-        for (const item of this.components){
+        for (const item of this.xmlBuilders){
             item.toXml(root);
         }
 
-        root
-        .child(
-            new Xml('w:p')
-            .child(new Xml('w:r').child(new Xml('w:fldChar').attr('w:fldCharType', 'end'))),
-            new Xml('w:p')
-            .child(
-                new Xml('w:pPr')
-                .child(
-                    new Xml('w:sectPr')
-                    .child(
+        root.push(
+            new Xml('w:p').push(new Xml('w:r').push(new Xml('w:fldChar').attr('w:fldCharType', 'end'))),
+            new Xml('w:p').push(
+                new Xml('w:pPr').push(
+                    new Xml('w:sectPr').push(
                         new Xml('w:pgSz').attr('w:w', 11906).attr('w:h', 16838),
                         new Xml('w:pgMar').attr('w:top', 1440).attr('w:right', 1800)
                         .attr('w:bottom', 1440).attr('w:left', 1800)

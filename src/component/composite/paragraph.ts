@@ -1,22 +1,49 @@
-import {Xml} from "../../xml";
-import {Composite} from "./composite";
-
+import {Xml, E, Composite,} from "../../xml";
 
 export class Paragraph extends Composite{
-    public toXml(root: Xml){
-        const para = new Xml('w:p');
-        root.child(para);
+    private spacing?: {before: number, after: number, line: number};
+    private indentChar?: number;
+    private justify?: string;
+    private notSnapToGrid: boolean = false;
 
-        para
-        .child(
-            new Xml('w:pPr')
-            .child(
-                new Xml('w:spacing').attr('w:before', 0).attr('w:after', 0).attr('w:line', 360),
-                new Xml('w:ind').attr('w:firstLineChars', 200)
-            )
-        );
+    set Spacing(val: {before: number; after: number; line: number}){
+        this.spacing = val;
+    }
+
+    set IndentChar(val: number){
+        this.indentChar = val;
+    }
+
+    set Justify(val: string){
+        this.justify = val;
+    }
+
+    set NotSnapToGrid(val: boolean){
+        this.notSnapToGrid = val;
+    }
+
+    public toXml(root: Xml){
+        const para = root.newChild('w:p');
+        const prop = para.newChild('w:pPr');
+
+        if(this.spacing){
+            const{before, after, line} = this.spacing;
+            const spacing = prop.newChild('w:spacing');
+            if(before){spacing.attr('w:before', before)}
+            if(after){spacing.attr('w:after', after)}
+            if(line){spacing.attr('w:line', line)}
+        }
+        if(this.indentChar){
+            prop.push(E('w:ind').attr('w:firstLineChars', this.indentChar * 100))
+        }
+        if(this.justify){
+            prop.push(E('w:jc').attr('w:val', this.justify));
+        }
+        if(this.notSnapToGrid){
+            prop.push(E('w:snapToGrid').attr('w:val', !this.notSnapToGrid))
+        }
         
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(para);
         }
     }

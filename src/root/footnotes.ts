@@ -25,20 +25,20 @@ export class Footnotes extends Root{
         .attr('xmlns:w10', 'urn:schemas-microsoft-com:office:word')
         .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
         .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml')
-        .child(new Xml('w:footnote')
+        .push(new Xml('w:footnote')
             .attr('w:type', 'separator')
             .attr('w:id', '0')
-            .child(new Xml('w:p')
-                .child(new Xml('w:r')
-                    .child(new Xml('w:separator')))))
-        .child(new Xml('w:footnote')
+            .push(new Xml('w:p')
+                .push(new Xml('w:r')
+                    .push(new Xml('w:separator')))))
+        .push(new Xml('w:footnote')
             .attr('w:type', 'continuationSeparator')
             .attr('w:id', '1')
-            .child(new Xml('w:p')
-                .child(new Xml('w:r')
-                    .child(new Xml('w:continuationSeparator')))));
+            .push(new Xml('w:p')
+                .push(new Xml('w:r')
+                    .push(new Xml('w:continuationSeparator')))));
 
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(footnotes);
         }
 

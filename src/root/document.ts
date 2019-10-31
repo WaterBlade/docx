@@ -7,7 +7,7 @@ export class Document extends Root{
         const body = new Xml('w:body');
 
         document
-        .child(body)
+        .push(body)
         .attr('xmlns:ve', 'http://schemas.openxmlformats.org/markup_compatibility/2006')
         .attr('xmlns:o', 'urn:schemas-microsoft-com:office:office')
         .attr('xmlns:r', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships')
@@ -18,7 +18,7 @@ export class Document extends Root{
         .attr('xmlns:w', 'http://schemas.openxmlformats.org/wordprocessingml/2006/main')
         .attr('xmlns:wne', 'http://schemas.microsoft.com/office/word/2006/wordml');
 
-        for(const item of this.components){
+        for(const item of this.xmlBuilders){
             item.toXml(body);
         }
 
