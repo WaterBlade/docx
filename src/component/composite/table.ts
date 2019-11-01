@@ -7,9 +7,9 @@ export class Table extends XmlObjectComposite<Row>{
     private layout?: string = 'fixed';
     private columnWidthList?: number[];
     private tableX?: number;
-    private tableXSpec?: number;
+    private tableXSpec?: string;
     private tableY?: number;
-    private tableYSpec?: number;
+    private tableYSpec?: string;
     private cellMargin: {
         top?: number,
         bottom?: number,
@@ -38,7 +38,7 @@ export class Table extends XmlObjectComposite<Row>{
         this.tableXSpec = undefined;
     }
 
-    set TableXSpec(val:number ){
+    set TableXSpec(val:string){
         this.tableXSpec = val;
         this.tableX =undefined;
     }
@@ -48,12 +48,12 @@ export class Table extends XmlObjectComposite<Row>{
         this.tableYSpec = undefined;
     }
 
-    set TableYSpec(val: number ){
+    set TableYSpec(val: string){
         this.tableYSpec = val;
         this.tableY = undefined;
     }
 
-    set CellMargin(val: {top: number, bottom: number, left: number, right: number} ){
+    set CellMargin(val: {top?: number, bottom?: number, left?: number, right?: number} ){
         this.cellMargin = val;
     }
 

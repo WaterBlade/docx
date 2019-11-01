@@ -22,6 +22,10 @@ export class Text implements XmlObject{
         this.bold = val;
     }
 
+    set Text(val: string){
+        this.text = val;
+    }
+
     constructor( private text: string){}
 
     public toXml(root: Xml){

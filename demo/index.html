@@ -27,6 +27,8 @@
                 const d = new docx.Var('d');
                 const ref = new docx.Reference('表');
 
+                doc.coverBuilder().build();
+
                 b.value = 2;
                 c.value = 1;
                 a.value = (b.value+c.value)*c.value;

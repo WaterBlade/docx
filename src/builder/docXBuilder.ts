@@ -6,6 +6,7 @@ import { MathProcedureBuilder } from "./mathProcedureBuilder";
 import { MathDeclarationBuilder } from "./mathDeclarationBuilder";
 import { TableBuilder } from "./tableBuilder";
 import { Reference } from "./reference";
+import { CoverBuilder } from "./coverBuilder";
 
 
 export class DocXBuilder{
@@ -14,6 +15,10 @@ export class DocXBuilder{
     public async saveBlob(path: string='example.docx'){
 
         return await this.docx.saveBlob(path);
+    }
+
+    public coverBuilder(){
+        return new CoverBuilder(this.docx);
     }
 
     public paragraphBuilder(){

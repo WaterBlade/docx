@@ -1,12 +1,12 @@
 import {Xml, E, Composite,} from "../../xml";
 
 export class Paragraph extends Composite{
-    private spacing?: {before: number, after: number, line: number};
+    private spacing?: {before?: number, after?: number, line?: number};
     private indentChar?: number;
     private justify?: string;
     private notSnapToGrid: boolean = false;
 
-    set Spacing(val: {before: number; after: number; line: number}){
+    set Spacing(val: {before?: number; after?: number; line?: number}){
         this.spacing = val;
     }
 
