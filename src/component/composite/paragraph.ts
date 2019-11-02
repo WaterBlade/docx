@@ -29,9 +29,9 @@ export class Paragraph extends Composite{
         if(this.spacing){
             const{before, after, line} = this.spacing;
             const spacing = prop.newChild('w:spacing');
-            if(before){spacing.attr('w:before', before)}
-            if(after){spacing.attr('w:after', after)}
-            if(line){spacing.attr('w:line', line)}
+            if(before !== undefined){spacing.attr('w:before', before)}
+            if(after !== undefined){spacing.attr('w:after', after)}
+            if(line !== undefined){spacing.attr('w:line', line)}
         }
         if(this.indentChar){
             prop.push(E('w:ind').attr('w:firstLineChars', this.indentChar * 100))

@@ -3,18 +3,17 @@ import { DocX } from "./docX";
 import { Cover, Cell, BorderName, Paragraph, Text } from "../component";
 import { Table } from "../component/composite/table";
 import { Row } from "../component/composite/row";
-import { rootCertificates } from "tls";
 
 export class CoverBuilder extends Builder{
     private cover: Cover = new Cover();
 
-    private project?: string;
-    private name?: string;
-    private designPart?: string;
-    private designPhase?: string;
+    private project?: string = '**工程';
+    private name?: string = '**计算书';
+    private designPart?: string = '**专业';
+    private designPhase?: string = '**阶段';
     private serialCode?: string;
     private secretType?: string;
-    private footer?: string;
+    private footer?: string = '湖南省水利水电勘测设计研究总院';
 
     set Project(val: string){
         this.project = val;
@@ -71,7 +70,8 @@ export class CoverBuilder extends Builder{
         // 计算书
         const c3 = this.makeCell({
             text:'计 算 书',
-            size: 72
+            size: 72,
+            hAlign: 'center'
         });
         const t3 = new Table(new Row(c3));
         t3.ColumnWidthList = [5000];
@@ -100,6 +100,7 @@ export class CoverBuilder extends Builder{
                         text: value[i],
                         size: 30,
                         font: '楷体',
+                        hAlign: 'center',
                         vAlign: 'bottom',
                         borders: ['bottom'],
                         borderSize: 6,
@@ -133,9 +134,12 @@ export class CoverBuilder extends Builder{
 
         const t6 = new Table(
             new Row(
-                this.makeCell({text: this.footer, size: 24})
+                this.makeCell({text: this.footer, hAlign: 'center',size: 24})
             )
         )
+        t6.ColumnWidthList = [5000];
+        t6.TableXSpec = 'center';
+        t6.TableY = 13500;
 
         this.cover.push(t1, t2, t3, t4, t5, t6);
 
