@@ -16,9 +16,9 @@ export class Declaration extends Composite{
             para.push(
                 E('w:pPr').push(
                     E('w:tabs').push(
-                        E('w:tab').attr('w:val', 'right').attr('w:pos', 500),
-                        E('w:tab').attr('w:val', 'center').attr('w:pos', 600),
-                        E('w:tab').attr('w:val', 'left').attr('w:pos', 700)
+                        E('w:tab').attr('w:val', 'right').attr('w:pos', 600),
+                        E('w:tab').attr('w:val', 'center').attr('w:pos', 700),
+                        E('w:tab').attr('w:val', 'left').attr('w:pos', 800)
                     )
                 ),
                 E('w:r').push(E('w:tab')),
@@ -32,7 +32,9 @@ export class Declaration extends Composite{
         }
         if(this.unit){
             para.push(E('w:r').push(E('w:t').text('，')));
-            this.unit.toXml(para);
+            const unit = E('m:oMath');
+            this.unit.toXml(unit);
+            para.push(unit);
         }
     }
 }

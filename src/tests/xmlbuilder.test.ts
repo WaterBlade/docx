@@ -1,10 +1,8 @@
-import {Xml} from '../src/xml';
+import {Xml} from '../xml';
 
 const {
     describe,
     it,
-    should,
-    before
 } = require('mocha');
 
 const {

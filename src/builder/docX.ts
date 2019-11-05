@@ -1,5 +1,6 @@
 import {Catalog, Content, Cover} from "../component";
 import {Document, Footnotes, Header, Relationships} from "../root";
+import JSZip = require("jszip");
 
 interface IFile{
     path: string,
@@ -53,7 +54,6 @@ export class DocX{
         this.process_roots();
         const files = this.generate_files();
 
-        const {default: JSZip} = await import('jszip');
         const FileSaver = await import('file-saver');
 
         const zip = new JSZip();

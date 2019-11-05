@@ -4,8 +4,10 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/**/*.ts",
-    "build": "webpack"
+    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register src/tests/**/*.ts",
+    "build": "npm run webpack",
+    "webpack": "rimraf ./build && webpack",
+    "tsc": "rimraf ./build && tsc -p ."
   },
   "keywords": [],
   "author": "",
@@ -23,10 +25,12 @@
     "@types/webpack": "^4.39.5",
     "chai": "^4.2.0",
     "mocha": "^6.2.1",
+    "rimraf": "^3.0.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
-  }
+  },
+  "types": "./build/index.d.ts"
 }

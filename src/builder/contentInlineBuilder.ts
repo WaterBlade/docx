@@ -41,7 +41,7 @@ export class ContentInlineBuilder extends Builder{
     }
 
     public mathBuilder(){
-        return new MathInlineBuilder(this.docx, this.composite);
+        return new MathInlineBuilder(this.composite);
     }
 
     public variable(variable: Var){

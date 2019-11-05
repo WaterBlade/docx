@@ -1,4 +1,4 @@
-import {MathText, SubSript, SupSript, Rad, Delimeter, Func, Div as DivComp, Text} from "../component";
+import { MathText, SubSript, SupSript, Rad, Delimeter, Func, Div as DivComp, EqArr, } from "../component";
 import { Declaration } from "../component/composite/declaration";
 import { XmlObject, Composite } from "../xml";
 
@@ -7,65 +7,62 @@ export const Level2Precedence = 2;
 export const Level3Precedence = 3
 export const TopPrecedence = 10;
 
-export interface IQuantative{
+export interface IQuantative {
     unit?: Unit,
-    format?: (num: number)=>string
+    format?: (num: number) => string
 }
 
-export const EqualSymbol = new MathText('=', {sty:'p'});
-export const AlignEqualSymbol = new MathText('=', {sty:'p', align:true});
+export const EqualSymbol = new MathText('=', { sty: 'p' });
+export const AlignEqualSymbol = new MathText('=', { sty: 'p', align: true });
 
-export abstract class Expression{
-    constructor(protected precedence: number){}
+export abstract class Expression {
+    constructor(protected precedence: number) { }
 
-    get Precedence(){
+    get Precedence() {
         return this.precedence;
     }
 
-    get Value(){
+    get Value() {
         return NaN;
     }
 
-    public toResult(option: IQuantative={}): XmlObject{
-        const {unit, format} = option;
-        const num = format ? format(this.Value) : this.Value
-        if(unit){
-            return new Composite(new MathText(num), unit.toVar());
-        }
-        return new MathText(num);
+    public toResult(option:{unit?: Expression, precision?: number} = {}): XmlObject {
+        return new Var('anony',option).toResult();
     }
 
     public abstract toVar(): XmlObject;
 
+    public toPrdVar(){return this.toVar()};
+
     public abstract toNum(): XmlObject;
 
-    public add(right: Expression){
+    public add(right: Expression) {
         return new Add(this, right);
     }
 
-    public sub(right: Expression){
+    public sub(right: Expression) {
         return new Sub(this, right);
     }
 
-    public mul(right: Expression){
+    public mul(right: Expression) {
         return new Mul(this, right);
     }
 
-    public div(right: Expression){
+    public div(right: Expression) {
         return new Div(this, right);
     }
 
-    public flatDiv(right: Expression){
+    public flatDiv(right: Expression) {
         return new FlatDiv(this, right);
     }
 
-    public pow(index: Expression | number): Expression{
-        index = (index instanceof Expression) ?  index : new Num(index)
+    public pow(index: Expression | number): Expression {
+        index = (index instanceof Expression) ? index : new Num(index)
         return new Pow(this, index)
     }
 
-    public rad(index: Expression | number): Expression{
-        index = (index instanceof Expression) ?  index : new Num(index)
+    public rad(index: Expression | number): Expression {
+        index = (index instanceof Expression) ? index : new Num(index)
         return new Radical(index, this)
     }
 }
@@ -74,40 +71,56 @@ export abstract class Expression{
 // Variable
 // 
 export class Var extends Expression {
-    public value: number = NaN;
+    protected value: number = NaN;
+
     constructor(protected name: string, protected feature: {
         sub?: string;
         inform?: string;
         unit?: Expression;
-        format?: (num: number) => string;
-    }={}) { super(TopPrecedence); }
+        precision?: number;
+    } = {}) { super(TopPrecedence); }
+
     get Value() {
         return this.value;
     }
-    set Value(val: number){
+    set Value(val: number) {
         this.value = val;
     }
-    get Declaration(){
-        if(this.feature.unit){
+    get Declaration() {
+        if (this.feature.unit) {
             return new Declaration(this.toVar(), this.feature.inform, this.feature.unit.toVar())
         }
         return new Declaration(this.toVar(), this.feature.inform);
     }
-    public toVar() {
+    public toVar():XmlObject {
         if (this.feature && this.feature.sub) {
             return new SubSript(new MathText(this.name), new MathText(this.feature.sub));
         }
         return new MathText(this.name);
     }
-    public toNum() {
+    public toNum(): XmlObject {
         if (!this.value) {
             throw Error(`Variable ${this.name} has not been assigned.`);
         }
-        let num: string | number = this.value;
-        if (this.feature && this.feature.format) {
-            num = this.feature.format(this.value);
+
+        let prec = 2;
+        if (this.feature && this.feature.precision) {
+            prec = this.feature.precision;
         }
-        return new MathText(num);
+
+        if (Math.abs(this.value) < 1e-9) {
+            return new MathText(0);
+        }
+
+        if (Math.abs(this.value) > 10000 || Math.abs(this.value) < 0.0001 && this.value !== 0) {
+            const sup = Math.floor(Math.log10(Math.abs(this.value)));
+            const base = this.value / Math.pow(10, sup);
+            return new Composite(
+                new MathText(Number(base).toFixed(prec)),
+                new MathText('×', { sty: 'p' }),
+                new SubSript(new MathText(10), new MathText(sup)))
+        }
+        return new MathText(Number(this.value).toFixed(prec));
     }
     public toResult() {
         if (this.feature && this.feature.unit) {
@@ -116,6 +129,36 @@ export class Var extends Expression {
         else {
             return this.toNum();
         }
+    }
+}
+
+
+export class FracVar extends Var{
+    protected den = 1;
+
+    set Den(val: number){
+        this.den = val;
+        this.value = 1 / val;
+    }
+
+    get Den(){
+        return this.den;
+    }
+
+    set Value(val: number){
+        this.value = val;
+        this.den = 1 / val;
+    }
+
+    get Value(){
+        return this.value;
+    }
+
+    public toNum(){
+        if (!this.value) {
+            throw Error(`Variable ${this.name} has not been assigned.`);
+        }
+        return new DivComp(new MathText(1), new MathText(this.den));
     }
 }
 
@@ -145,15 +188,18 @@ export class Unit extends Var {
 }
 
 export function variable(
-    name: string, feature:{sub?: string, inform?:string, unit?:Expression, format?:(num: number)=> string}={}
-    ){return new Var(name, feature);}
-export function num(n: number){return new Num(n);}
-export function unit(name: string){return new Unit(name);}
+    name: string, feature: { sub?: string, inform?: string, unit?: Expression, precision?: number} = {}
+): Var { return new Var(name, feature); }
+export function fractionVariable(
+    name: string, feature: { sub?: string, inform?: string, unit?: Expression, precision?: number} = {}
+): FracVar { return new FracVar(name, feature); }
+export function num(n: number): Num { return new Num(n); }
+export function unit(name: string): Unit { return new Unit(name); }
 
 //
 // Operator
 // 
- 
+
 
 export class Operator extends Expression {
     protected numOperator: string;
@@ -281,14 +327,14 @@ class Radical extends Expression {
     }
     public toVar() {
         let hasIndex = true;
-        if (this.index instanceof Num && this.index.value === 2) {
+        if (this.index instanceof Num && this.index.Value === 2) {
             hasIndex = false;
         }
         return new Rad(this.index.toVar(), this.expression.toVar(), hasIndex);
     }
     public toNum() {
         let hasIndex = true;
-        if (this.index instanceof Num && this.index.value === 2) {
+        if (this.index instanceof Num && this.index.Value === 2) {
             hasIndex = false;
         }
         return new Rad(this.index.toNum(), this.expression.toNum(), hasIndex);
@@ -311,7 +357,7 @@ class Parenthesis extends Expression {
     }
 }
 
-export function neg(exp: Expression){return new Neg(exp);}
+export function neg(exp: Expression) { return new Neg(exp); }
 
 //
 // Function
@@ -390,16 +436,16 @@ class Ln extends FunctionBase {
     }
 }
 
-export function sin(exp: Expression){return new Sin(exp);}
-export function cos(exp: Expression){return new Cos(exp);}
-export function tan(exp: Expression){return new Tan(exp);}
-export function cot(exp: Expression){return new Cot(exp);}
-export function asin(exp: Expression){return new ArcSin(exp);}
-export function acos(exp: Expression){return new ArcCos(exp);}
-export function atan(exp: Expression){return new ArcTan(exp);}
-export function acot(exp: Expression){return new ArcCot(exp);}
-export function log(exp: Expression){return new Log(exp);}
-export function ln(exp: Expression){return new Ln(exp);}
+export function sin(exp: Expression) { return new Sin(exp); }
+export function cos(exp: Expression) { return new Cos(exp); }
+export function tan(exp: Expression) { return new Tan(exp); }
+export function cot(exp: Expression) { return new Cot(exp); }
+export function asin(exp: Expression) { return new ArcSin(exp); }
+export function acos(exp: Expression) { return new ArcCos(exp); }
+export function atan(exp: Expression) { return new ArcTan(exp); }
+export function acot(exp: Expression) { return new ArcCot(exp); }
+export function log(exp: Expression) { return new Log(exp); }
+export function ln(exp: Expression) { return new Ln(exp); }
 
 //
 // Equation
@@ -412,10 +458,10 @@ export class Equation {
         return false;
     }
     get OriginalSymbol() {
-        return new MathText('=', {sty:'p'});
+        return new MathText('=', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('=', {sty:'p'});
+        return new MathText('=', { sty: 'p' });
     }
     get EqualitySymbol() {
         return this.Value ? this.OriginalSymbol : this.ReverseSymbol;
@@ -426,7 +472,7 @@ export class Equation {
     get Right() {
         return this.right;
     }
-    public toVar(){
+    public toVar() {
         return new Composite(this.left.toVar(), this.OriginalSymbol, this.right.toVar());
     }
 }
@@ -435,10 +481,10 @@ class Equal extends Equation {
         return Math.abs(this.left.Value - this.right.Value) < this.tolerance;
     }
     get OriginalSymbol() {
-        return new MathText('=', {sty: 'p'});
+        return new MathText('=', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('≠', {sty:'p'});
+        return new MathText('≠', { sty: 'p' });
     }
 }
 class NotEqual extends Equation {
@@ -446,10 +492,10 @@ class NotEqual extends Equation {
         return Math.abs(this.left.Value - this.right.Value) > this.tolerance;
     }
     get ReverseSymbol() {
-        return new MathText('=', {sty: 'p'});
+        return new MathText('=', { sty: 'p' });
     }
     get OriginalSymbol() {
-        return new MathText('≠', {sty:'p'});
+        return new MathText('≠', { sty: 'p' });
     }
 }
 class Greater extends Equation {
@@ -457,10 +503,10 @@ class Greater extends Equation {
         return this.left > this.right;
     }
     get OriginalSymbol() {
-        return new MathText('>', {sty: 'p'});
+        return new MathText('>', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('≤', {sty: 'p'});
+        return new MathText('≤', { sty: 'p' });
     }
 }
 class GreaterOrEqual extends Equation {
@@ -468,10 +514,10 @@ class GreaterOrEqual extends Equation {
         return this.left >= this.right;
     }
     get OriginalSymbol() {
-        return new MathText('≥', {sty: 'p'});
+        return new MathText('≥', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('<', {sty: 'p'});
+        return new MathText('<', { sty: 'p' });
     }
 }
 class Lesser extends Equation {
@@ -479,10 +525,10 @@ class Lesser extends Equation {
         return this.left < this.right;
     }
     get OriginalSymbol() {
-        return new MathText('<', {sty: 'p'});
+        return new MathText('<', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('≥', {sty: 'p'});
+        return new MathText('≥', { sty: 'p' });
     }
 }
 class LesserOrEqual extends Equation {
@@ -490,33 +536,87 @@ class LesserOrEqual extends Equation {
         return this.left <= this.right;
     }
     get OriginalSymbol() {
-        return new MathText('≤', {sty: 'p'});
+        return new MathText('≤', { sty: 'p' });
     }
     get ReverseSymbol() {
-        return new MathText('>', {sty: 'p'});
+        return new MathText('>', { sty: 'p' });
     }
 }
 
-export function greater(left: Expression, right: Expression){
+export function greater(left: Expression, right: Expression) {
     return new Greater(left, right);
 }
 
-export function greaterEqual(left: Expression, right: Expression){
+export function greaterEqual(left: Expression, right: Expression) {
     return new GreaterOrEqual(left, right);
 }
 
-export function equal(left: Expression, right: Expression){
+export function equal(left: Expression, right: Expression) {
     return new Equal(left, right);
 }
 
-export function notEqual(left: Expression, right: Expression){
+export function notEqual(left: Expression, right: Expression) {
     return new NotEqual(left, right);
 }
 
-export function less(left: Expression, right:Expression){
+export function less(left: Expression, right: Expression) {
     return new Lesser(left, right);
 }
 
-export function lessEqual(left: Expression, right: Expression){
+export function lessEqual(left: Expression, right: Expression) {
     return new LesserOrEqual(left, right);
+}
+
+// Condition
+export class ConditionExpression extends Expression{
+    constructor(protected conditions: Equation[], protected expressions: Expression[]){
+        super(TopPrecedence);
+    }
+
+    get Value(){
+        let exp = this.expressions[0];
+        for(const i in this.conditions){
+            if(this.conditions[i].Value){
+                exp = this.expressions[i];
+                break;
+            }
+        }
+        return exp.Value;
+    }
+
+    public toVar(){
+        const array = new EqArr();
+        for(let i = 0; i < this.expressions.length; i++){
+            const exp = this.expressions[i];
+            const cond = this.conditions[i];
+            array.push(new Composite(exp.toVar(), new MathText(' , '), cond.toVar()));
+        }
+        return new Delimeter(array, {left: '{'});
+    }
+
+    public toPrdVar(){
+        let exp = this.expressions[0];
+        for(const i in this.conditions){
+            if(this.conditions[i].Value){
+                exp = this.expressions[i];
+                break;
+            }
+        }
+        return exp.toVar();
+    }
+
+    public toNum(){
+        let exp = this.expressions[0];
+        for(const i in this.conditions){
+            if(this.conditions[i].Value){
+                exp = this.expressions[i];
+                break;
+            }
+        }
+        return exp.toNum();
+    }
+}
+
+export function condition(conditions: Equation[], expressions: Expression[]){
+    return new ConditionExpression(conditions, expressions);
 }

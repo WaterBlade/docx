@@ -3,7 +3,6 @@ import {Xml, E, Composite} from "../../xml";
 export class HeadingInCatalog extends Composite{
     constructor(
         private level: number,
-        private id: number,
         private symbol: string,
         private code: string,
         private isFirst: boolean=false,

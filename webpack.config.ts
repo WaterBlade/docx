@@ -5,8 +5,6 @@ import { Configuration } from "webpack";
 module.exports = {
     entry: "./src/index.ts",
 
-    mode: 'development',
-
     output: {
         path: path.resolve("build"),
         filename: "index.js",

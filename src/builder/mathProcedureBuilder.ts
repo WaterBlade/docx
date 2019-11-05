@@ -18,7 +18,7 @@ export class MathProcedureBuilder extends Builder{
                 new MathInline(
                     variable.toVar(),
                     AlignEqualSymbol,
-                    expression.toVar()
+                    expression.toPrdVar()
                 ),
                 new MathInline(
                     AlignEqualSymbol,
@@ -33,7 +33,7 @@ export class MathProcedureBuilder extends Builder{
             this.procedure.push(new MathInline(
                 variable.toVar(),
                 AlignEqualSymbol,
-                expression.toVar(),
+                expression.toPrdVar(),
                 EqualSymbol,
                 expression.toNum(),
                 EqualSymbol,

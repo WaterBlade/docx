@@ -1,12 +1,11 @@
 import {MathText, MathInline} from "../component";
-import { DocX } from "./docX";
 import { Expression, Var, Equation, EqualSymbol, IQuantative} from "./math";
 import { Composite } from "../xml";
 
 
 export class MathInlineBuilder{
     private mathInline = new MathInline();
-    constructor(private docx: DocX, private composite: Composite){
+    constructor(private composite: Composite){
         this.composite.push(this.mathInline);
     }
 

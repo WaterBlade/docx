@@ -139,12 +139,14 @@ export class Delimeter extends MathObject{
     }
 
     public toXml(root: Xml){
-        const {left , right} = this.delimeter;
+        let {left , right} = this.delimeter;
+        left = left ? left : '';
+        right = right ? right: '';
         root.push(
             E('m:d').push(
                 E('m:dPr').push(
-                    left ? E('m:begChr').attr('m:val', left) : null,
-                    right ? E('m:endChr').attr('m:val', right) : null
+                    E('m:begChr').attr('m:val', left) ,
+                    E('m:endChr').attr('m:val', right) 
                 ),
                 E('m:e').build(this.expression)
             )
@@ -171,13 +173,13 @@ export class Func extends MathObject{
 
 export class NArray extends MathObject{
     constructor(protected base: XmlObject, protected feature: {
-        name?: string, sub?: XmlObject, sup?: XmlObject, limLoc?: string
+        name?: string, sub?: XmlObject, sup?: XmlObject, 
     }={}){
         super();
     }
 
     public toXml(root: Xml){
-        const {name, sub, sup, limLoc} = this.feature
+        const {name, sub, sup } = this.feature
 
         root.push(
             E('m:nary').push(

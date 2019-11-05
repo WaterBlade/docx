@@ -1,9 +1,8 @@
 import {Builder} from "./builder";
 import { DocX } from "./docX";
 import { Expression, AlignEqualSymbol, Var, Equation} from "./math";
-import { MathInline, MathText, EqArr, Definition, Delimeter} from "../component";
+import { MathInline,   Definition, } from "../component";
 import { Reference } from "./reference";
-import { Composite } from "../xml";
 
 export class MathDefinitionBuilder extends Builder{
     protected definition: Definition;
@@ -26,22 +25,6 @@ export class MathDefinitionBuilder extends Builder{
                 variable.toVar(),
                 AlignEqualSymbol,
                 expression.toVar()
-            )
-        )
-    }
-
-    public conditionFormula(variable: Var, expressions: Expression[], conditions: Equation[]){
-        const array = new EqArr();
-        for(let i = 0; i < expressions.length; i++){
-            const exp = expressions[i];
-            const cond = conditions[i];
-            array.push(new Composite(exp.toVar(), new MathText(' , '), cond.toVar()));
-        }
-        this.definition.push(
-            new MathInline(
-                variable.toVar(),
-                AlignEqualSymbol,
-                new Delimeter(array)
             )
         )
     }

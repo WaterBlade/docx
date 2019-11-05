@@ -1,6 +1,6 @@
 import {Builder} from "./builder";
 import {DocX} from "./docX";
-import { HeadingInCatalog, HeadingInContent, Text, Catalog } from "../component";
+import { HeadingInCatalog, HeadingInContent, Catalog } from "../component";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 import { Var } from "./math";
 
@@ -21,7 +21,7 @@ export class HeadingBuilder extends Builder{
         const code = this.docx.computeCatalogCode(this.level);
 
         // 生成目录里和正文力的标题
-        const headingInCatalog = new HeadingInCatalog(this.level, id, symbol, code, isFirst);
+        const headingInCatalog = new HeadingInCatalog(this.level, symbol, code, isFirst);
         const headingInContent = new HeadingInContent( this.level, id, symbol);
 
         // 将标题添加到目录及正文中

@@ -145,26 +145,6 @@ export class CoverBuilder extends Builder{
 
     }
 
-    private makeTable(option: {
-        columnWidthList?: number[],
-        tableX?: number;
-        tableY?: number,
-        tableXSpec?: string,
-        tableYSpec?: string,
-        cellMargin?:{top:number, bottom: number, left: number, right: number}
-    }={}){
-        const table = new Table();
-        const {columnWidthList, tableX, tableY, tableXSpec, tableYSpec, cellMargin} = option;
-        columnWidthList? table.ColumnWidthList = columnWidthList : null;
-        tableX? table.TableX = tableX: null;
-        tableY? table.TableY = tableY: null;
-        tableXSpec ? table.TableXSpec = tableXSpec: null;
-        tableYSpec ? table.TableYSpec = tableYSpec: null;
-        cellMargin ? table.CellMargin = cellMargin: null;
-        return table;
-
-    }
-
     private makeCell(option:{
         text?: string,
         size?: number,
@@ -179,6 +159,7 @@ export class CoverBuilder extends Builder{
         const {text, size, font, hAlign, vAlign, borders, space, borderSize} = option;
         if(vAlign){cell.VertAlign = vAlign}
         if(borders){cell.Borders = borders}
+        if(borderSize){cell.BorderSize = borderSize}
 
         const para = new Paragraph();
         cell.push(para);
