@@ -18,6 +18,8 @@ export const AlignEqualSymbol = new MathText('=', { sty: 'p', align: true });
 export abstract class Expression {
     constructor(protected precedence: number) { }
 
+    abstract clone(): Expression;
+
     get Precedence() {
         return this.precedence;
     }
@@ -80,6 +82,12 @@ export class Var extends Expression {
         precision?: number;
     } = {}) { super(TopPrecedence); }
 
+    public clone(){
+        const variable = new Var(this.name, this.feature);
+        variable.value = this.value;
+        return variable;
+    }
+
     get Value() {
         return this.value;
     }
@@ -136,6 +144,13 @@ export class Var extends Expression {
 export class FracVar extends Var{
     protected den = 1;
 
+    public clone(){
+        const v = new FracVar(this.name, this.feature)
+        v.value = this.value;
+        v.den = this.den;
+        return v;
+    }
+
     set Den(val: number){
         this.den = val;
         this.value = 1 / val;
@@ -167,6 +182,11 @@ export class Num extends Var {
         super(`${num}`);
         this.value = num;
     }
+
+    public clone(){
+        return new Num(this.value);
+    }
+
     public toVar() {
         return this.toNum();
     }
@@ -201,7 +221,7 @@ export function unit(name: string): Unit { return new Unit(name); }
 // 
 
 
-export class Operator extends Expression {
+export abstract class Operator extends Expression {
     protected numOperator: string;
     constructor(protected left: Expression, protected right: Expression, protected precedence: number, protected operator: string, numOperator?: string) {
         super(precedence);
@@ -216,6 +236,7 @@ export class Operator extends Expression {
             this.numOperator = numOperator;
         }
     }
+
     public toVar() {
         return new Composite(this.left.toVar(), new MathText(this.operator, { sty: 'p' }), this.right.toVar());
     }
@@ -227,6 +248,9 @@ export class Operator extends Expression {
 class Neg extends Expression {
     constructor(protected expression: Expression) {
         super(Level1Precedence);
+    }
+    public clone(){
+        return new Neg(this.expression.clone());
     }
     public toVar() {
         return new Composite(new MathText('-', { sty: 'p' }), this.expression.toVar());
@@ -243,6 +267,9 @@ class Add extends Operator {
     constructor(left: Expression, right: Expression) {
         super(left, right, Level1Precedence, '+');
     }
+    public clone(){
+        return new Add(this.left.clone(), this.right.clone());
+    }
     get Value() {
         return this.left.Value + this.right.Value;
     }
@@ -251,6 +278,9 @@ class Add extends Operator {
 class Sub extends Operator {
     constructor(left: Expression, right: Expression) {
         super(left, right, Level1Precedence, '-');
+    }
+    public clone(){
+        return new Sub(this.left.clone(), this.right.clone());
     }
     get Value() {
         return this.left.Value - this.right.Value;
@@ -261,6 +291,9 @@ class Mul extends Operator {
     constructor(left: Expression, right: Expression) {
         super(left, right, Level2Precedence, '⋅', '×');
     }
+    public clone(){
+        return new Mul(this.left.clone(), this.right.clone());
+    }
     get Value() {
         return this.left.Value * this.right.Value;
     }
@@ -269,6 +302,9 @@ class Mul extends Operator {
 class Div extends Expression {
     constructor(protected left: Expression, protected right: Expression) {
         super(Level2Precedence);
+    }
+    public clone(){
+        return new Div(this.left.clone(), this.right.clone());
     }
     public toVar() {
         return new DivComp(this.left.toVar(), this.right.toVar());
@@ -291,6 +327,9 @@ class FlatDiv extends Expression {
             this.right = new Parenthesis(this.right);
         }
     }
+    public clone(){
+        return new FlatDiv(this.left.clone(), this.right.clone());
+    }
     public toVar() {
         return new DivComp(this.left.toVar(), this.right.toVar(), 'lin');
     }
@@ -305,6 +344,9 @@ class FlatDiv extends Expression {
 class Pow extends Expression {
     constructor(protected expression: Expression, protected index: Expression) {
         super(Level3Precedence);
+    }
+    public clone(){
+        return new Pow(this.expression.clone(), this.index.clone());
     }
     public toVar() {
         let base = this.expression.toVar();
@@ -324,6 +366,9 @@ class Pow extends Expression {
 class Radical extends Expression {
     constructor(protected index: Expression, protected expression: Expression) {
         super(Level3Precedence);
+    }
+    public clone(){
+        return new Radical(this.index, this.expression);
     }
     public toVar() {
         let hasIndex = true;
@@ -346,6 +391,9 @@ class Radical extends Expression {
 
 class Parenthesis extends Expression {
     constructor(protected expression: Expression) { super(TopPrecedence); }
+    public clone(){
+        return new Parenthesis(this.expression.clone())
+    }
     public toVar() {
         return new Delimeter(this.expression.toVar(), { left: '(', right: ')' });
     }
@@ -363,7 +411,7 @@ export function neg(exp: Expression) { return new Neg(exp); }
 // Function
 //
 
-class FunctionBase extends Expression {
+abstract class FunctionBase extends Expression {
     protected name: string = '';
     constructor(protected expression: Expression) {
         super(TopPrecedence);
@@ -377,60 +425,90 @@ class FunctionBase extends Expression {
 }
 class Sin extends FunctionBase {
     protected name = 'sin';
+    public clone(){
+        return new Sin(this.expression.clone());
+    }
     get Value() {
         return Math.sin(this.expression.Value);
     }
 }
 class Cos extends FunctionBase {
     protected name = 'cos';
+    public clone(){
+        return new Cos(this.expression.clone());
+    }
     get Value() {
         return Math.cos(this.expression.Value);
     }
 }
 class Tan extends FunctionBase {
     protected name = 'tan';
+    public clone(){
+        return new Tan(this.expression.clone());
+    }
     get Value() {
         return Math.tan(this.expression.Value);
     }
 }
 class Cot extends FunctionBase {
     protected name = 'cot';
+    public clone(){
+        return new Cot(this.expression.clone());
+    }
     get Value() {
         return 1 / Math.tan(this.expression.Value);
     }
 }
 class ArcSin extends FunctionBase {
     protected name = 'arcsin';
+    public clone(){
+        return new ArcSin(this.expression.clone());
+    }
     get Value() {
         return Math.asin(this.expression.Value);
     }
 }
 class ArcCos extends FunctionBase {
     protected name = 'arccos';
+    public clone(){
+        return new ArcCos(this.expression.clone());
+    }
     get Value() {
         return Math.acos(this.expression.Value);
     }
 }
 class ArcTan extends FunctionBase {
     protected name = 'arctan';
+    public clone(){
+        return new ArcTan(this.expression.clone());
+    }
     get Value() {
         return Math.atan(this.expression.Value);
     }
 }
 class ArcCot extends FunctionBase {
     protected name = 'arccot';
+    public clone(){
+        return new ArcCot(this.expression.clone());
+    }
     get Value() {
         return Math.atan(1 / this.expression.Value);
     }
 }
 class Log extends FunctionBase {
     protected name = 'log';
+    public clone(){
+        return new Log(this.expression.clone());
+    }
     get Value() {
         return Math.log10(this.expression.Value);
     }
 }
 class Ln extends FunctionBase {
     protected name = 'ln';
+    public clone(){
+        return new Ln(this.expression.clone());
+    }
     get Value() {
         return Math.log(this.expression.Value);
     }
@@ -451,7 +529,7 @@ export function ln(exp: Expression) { return new Ln(exp); }
 // Equation
 // 
 
-export class Equation {
+export abstract class Equation {
     constructor(protected left: Expression, protected right: Expression, protected tolerance: number = 0.001) {
     }
     get Value() {
@@ -475,6 +553,7 @@ export class Equation {
     public toVar() {
         return new Composite(this.left.toVar(), this.OriginalSymbol, this.right.toVar());
     }
+    abstract clone(): Equation;
 }
 class Equal extends Equation {
     get Value() {
@@ -485,6 +564,9 @@ class Equal extends Equation {
     }
     get ReverseSymbol() {
         return new MathText('≠', { sty: 'p' });
+    }
+    public clone(){
+        return new Equal(this.left.clone(), this.right.clone())
     }
 }
 class NotEqual extends Equation {
@@ -497,6 +579,9 @@ class NotEqual extends Equation {
     get OriginalSymbol() {
         return new MathText('≠', { sty: 'p' });
     }
+    public clone(){
+        return new NotEqual(this.left.clone(), this.right.clone());
+    }
 }
 class Greater extends Equation {
     get Value() {
@@ -507,6 +592,9 @@ class Greater extends Equation {
     }
     get ReverseSymbol() {
         return new MathText('≤', { sty: 'p' });
+    }
+    public clone(){
+        return new Greater(this.left.clone(), this.right.clone());
     }
 }
 class GreaterOrEqual extends Equation {
@@ -519,6 +607,9 @@ class GreaterOrEqual extends Equation {
     get ReverseSymbol() {
         return new MathText('<', { sty: 'p' });
     }
+    public clone(){
+        return new GreaterOrEqual(this.left.clone(), this.right.clone());
+    }
 }
 class Lesser extends Equation {
     get Value() {
@@ -530,6 +621,9 @@ class Lesser extends Equation {
     get ReverseSymbol() {
         return new MathText('≥', { sty: 'p' });
     }
+    public clone(){
+        return new Lesser(this.left.clone(), this.right.clone());
+    }
 }
 class LesserOrEqual extends Equation {
     get Value() {
@@ -540,6 +634,9 @@ class LesserOrEqual extends Equation {
     }
     get ReverseSymbol() {
         return new MathText('>', { sty: 'p' });
+    }
+    public clone(){
+        return new LesserOrEqual(this.left.clone(), this.right.clone());
     }
 }
 
@@ -571,6 +668,10 @@ export function lessEqual(left: Expression, right: Expression) {
 export class ConditionExpression extends Expression{
     constructor(protected conditions: Equation[], protected expressions: Expression[]){
         super(TopPrecedence);
+    }
+
+    public clone(){
+        return new ConditionExpression(this.conditions.map(m=>m.clone()), this.expressions.map(m=>m.clone()))
     }
 
     get Value(){
