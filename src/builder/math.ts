@@ -738,4 +738,8 @@ export class Formula{
         this.variable.Value = this.expression.Value;
         return this.variable.Value;
     }
+
+    public clone(){
+        return new Formula(this.variable.clone(), this.expression.clone());
+    }
 }
