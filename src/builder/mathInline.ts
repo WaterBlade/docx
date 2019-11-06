@@ -1,5 +1,5 @@
 import {MathText, MathInline} from "../component";
-import { Expression, Var, Equation, EqualSymbol, IQuantative} from "./math";
+import { Expression, Var, Equation, EqualSymbol, IQuantative, Formula} from "./math";
 import { Composite } from "../xml";
 
 
@@ -13,11 +13,11 @@ export class MathInlineBuilder{
         this.mathInline.push(equation.toVar());
     }
 
-    public formula(left: Var, right: Expression){
+    public formula(fml: Formula){
         this.mathInline.push(
-            left.toVar(),
+            fml.Variable.toVar(),
             new MathText('=', {sty: 'p'}),
-            right.toVar()
+            fml.Expression.toVar()
         );
     }
 
@@ -50,25 +50,25 @@ export class MathInlineBuilder{
 
     }
 
-    public formulaValue(left: Var, right: Expression){
+    public formulaValue(fml: Formula){
         this.mathInline.push(
-            left.toVar(),
+            fml.Variable.toVar(),
             new MathText('=', {sty:'p'}),
-            right.toVar(),
+            fml.Expression.toVar(),
             new MathText('=', {sty:'p'}),
-            right.toNum(),
+            fml.Expression.toNum(),
             new MathText('=', {sty:'p'}),
-            left.toResult()
+            fml.Variable.toResult()
         );
     }
 
-    public expressionValue(left: Expression, right: Var){
+    public expressionValue(left: Expression){
         this.mathInline.push(
             left.toVar(),
             new MathText('=', {sty:'p'}),
             left.toNum(),
             new MathText('=', {sty: 'p'}),
-            right.toResult()
+            left.toResult()
         )
     }
 

@@ -4,7 +4,7 @@ import {DocX} from "./docX";
 import { Text, } from "../component";
 import { FootnoteBuilder } from "./footnoteBuilder";
 import { MathInlineBuilder} from "./mathInline";
-import { Equation, IQuantative, Var, Expression } from "./math";
+import { Equation, IQuantative, Var, Expression, Formula } from "./math";
 import { Reference } from "./reference"
 import { Composite } from "../xml";
 
@@ -53,8 +53,8 @@ export class ContentInlineBuilder extends Builder{
         this.mathBuilder().expression(expression);
     }
 
-    public formula(variable: Var, expression: Expression){
-        this.mathBuilder().formula(variable, expression);
+    public formula(fml: Formula){
+        this.mathBuilder().formula(fml);
         return this;
     }
 
@@ -68,13 +68,13 @@ export class ContentInlineBuilder extends Builder{
         return this;
     }
 
-    public expressionValue(expression: Expression, result: Var){
-        this.mathBuilder().expressionValue(expression, result);
+    public expressionValue(expression: Expression){
+        this.mathBuilder().expressionValue(expression);
         return this;
     }
 
-    public formulaValue(variable: Var, expression: Expression){
-        this.mathBuilder().formulaValue(variable, expression);
+    public formulaValue(fml: Formula){
+        this.mathBuilder().formulaValue(fml);
         return this;
     }
 

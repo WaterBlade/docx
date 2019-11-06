@@ -1,7 +1,7 @@
 import {Builder} from "./builder";
 import {MathInline, Procedure} from "../component";
 import { DocX } from "./docX";
-import { Var, Expression, AlignEqualSymbol, EqualSymbol, Equation, IQuantative } from "./math";
+import { Var,  AlignEqualSymbol, EqualSymbol, Equation, IQuantative, Formula } from "./math";
 
 export class MathProcedureBuilder extends Builder{
     protected procedure = new Procedure();
@@ -11,33 +11,32 @@ export class MathProcedureBuilder extends Builder{
         this.docx.content.push(this.procedure);
     }
 
-    public formula(variable: Var, expression: Expression, isLong: boolean=true){
+    public formula(fml: Formula, isLong: boolean=true){
         if(isLong){
-            if(variable)
             this.procedure.push(
                 new MathInline(
-                    variable.toVar(),
+                    fml.Variable.toVar(),
                     AlignEqualSymbol,
-                    expression.toPrdVar()
+                    fml.Expression.toPrdVar()
                 ),
                 new MathInline(
                     AlignEqualSymbol,
-                    expression.toNum()
+                    fml.Expression.toNum()
                 ),
                 new MathInline(
                     AlignEqualSymbol,
-                    variable.toResult()
+                    fml.Variable.toResult()
                 )
             )
         } else {
             this.procedure.push(new MathInline(
-                variable.toVar(),
+                fml.Variable.toVar(),
                 AlignEqualSymbol,
-                expression.toPrdVar(),
+                fml.Expression.toPrdVar(),
                 EqualSymbol,
-                expression.toNum(),
+                fml.Expression.toNum(),
                 EqualSymbol,
-                variable.toResult()
+                fml.Variable.toResult()
             ))
         }
 

@@ -2,7 +2,7 @@ import {Builder} from "./builder";
 import {DocX} from "./docX";
 
 import {Paragraph} from "../component";
-import { Equation, IQuantative, Var, Expression } from "./math";
+import { Equation, IQuantative, Var, Expression, Formula } from "./math";
 import { Reference } from "./reference"
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 
@@ -58,8 +58,8 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public formula(variable: Var, expression: Expression){
-        this.mathBuilder().formula(variable, expression);
+    public formula(fml: Formula){
+        this.mathBuilder().formula(fml);
         return this;
     }
 
@@ -73,13 +73,13 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public expressionValue(expression: Expression, result: Var){
-        this.mathBuilder().expressionValue(expression, result);
+    public expressionValue(expression: Expression){
+        this.mathBuilder().expressionValue(expression);
         return this;
     }
 
-    public formulaValue(variable: Var, expression: Expression){
-        this.mathBuilder().formulaValue(variable, expression);
+    public formulaValue(fml: Formula){
+        this.mathBuilder().formulaValue(fml);
         return this;
     }
 

@@ -1,6 +1,6 @@
 import {Builder} from "./builder";
 import { DocX } from "./docX";
-import { Expression, AlignEqualSymbol, Var, Equation} from "./math";
+import {  AlignEqualSymbol,  Equation, Formula} from "./math";
 import { MathInline,   Definition, } from "../component";
 import { Reference } from "./reference";
 
@@ -19,12 +19,12 @@ export class MathDefinitionBuilder extends Builder{
 
     }
 
-    public formula(variable: Var, expression: Expression){
+    public formula(fml: Formula){
         this.definition.push(
             new MathInline(
-                variable.toVar(),
+                fml.Variable.toVar(),
                 AlignEqualSymbol,
-                expression.toVar()
+                fml.Expression.toVar()
             )
         )
     }

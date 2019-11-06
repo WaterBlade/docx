@@ -721,3 +721,21 @@ export class ConditionExpression extends Expression{
 export function condition(conditions: Equation[], expressions: Expression[]){
     return new ConditionExpression(conditions, expressions);
 }
+
+// Formula
+export class Formula{
+    constructor(protected variable: Var, protected expression: Expression){}
+
+    get Variable(){
+        return this.variable;
+    }
+
+    get Expression(){
+        return this.expression;
+    }
+
+    public calc(){
+        this.variable.Value = this.expression.Value;
+        return this.variable.Value;
+    }
+}
