@@ -118,7 +118,7 @@ export class ConditionFormula extends Formula {
 
     public toProcedure(){
         for(const [equ, exp] of this.combines){
-            if(equ){
+            if(equ.calc()){
                 this.expression = exp;
                 break;
             }
