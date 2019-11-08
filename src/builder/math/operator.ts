@@ -1,6 +1,6 @@
 import { MathText, SubSript, SupSript, Rad, Delimeter, Div as DivComp } from "../../component";
 import { Composite } from "../../xml";
-import { Num } from "./variable";
+import { Num, num } from "./variable";
 import { Expression, Level1Precedence, Level2Precedence, Level3Precedence, TopPrecedence } from "./expression";
 //
 // Operator
@@ -175,11 +175,14 @@ class Inverse extends Expression{
         return new Div(new Num(1), this.expression).toNum();
     }
 }
+function wrapperNum(item: Expression | number){
+    return item instanceof Expression ? item : num(item);
+}
 export function neg(exp: Expression) { return new Neg(exp); }
-export function add(...exps: Expression[]) {
-    let left = exps[0];
+export function add(...exps: Array<Expression|number>) {
+    let left = wrapperNum(exps[0]);
     for (let i = 1; i < exps.length; i++) {
-        const right = exps[i];
+        const right = wrapperNum(exps[i]);
         if(right instanceof Minus){
             left = new Sub(left, right);
         }else{
@@ -188,17 +191,17 @@ export function add(...exps: Expression[]) {
     }
     return left;
 }
-export function sub(...exps: Expression[]){
-    let left = exps[0];
+export function sub(...exps: Array<Expression|number>){
+    let left = wrapperNum(exps[0]);
     for(let i = 1; i < exps.length; i++){
-        left = new Sub(left, exps[i]);
+        left = new Sub(left, wrapperNum(exps[i]));
     }
     return left;
 }
-export function mul(...exps: Expression[]) {
-    let left = exps[0];
+export function mul(...exps: Array<Expression|number>) {
+    let left = wrapperNum(exps[0]);
     for (let i = 1; i < exps.length; i++) {
-        const right = exps[i];
+        const right = wrapperNum(exps[i]);
         if(right instanceof Inverse){
             left = new Div(left, right);
         }else{
@@ -207,10 +210,10 @@ export function mul(...exps: Expression[]) {
     }
     return left;
 }
-export function div(...exps: Expression[]){
-    let left = exps[0];
+export function div(...exps: Array<Expression|number>){
+    let left = wrapperNum(exps[0]) 
     for(let i = 1; i<exps.length; i++){
-        left = new Div(left, exps[0]);
+        left = new Div(left, wrapperNum(exps[0]));
     }
     return left;
 }
