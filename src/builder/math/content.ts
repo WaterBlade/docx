@@ -10,12 +10,14 @@ class MathContent<T>{
 
     public push(...items: T[]){
         this.items.push(...items);
+        return this;
     }
 
     public merge(...contents: MathContent<T>[]){
         for (const c of contents){
             this.items.push(...c.items);
         }
+        return this;
     }
 }
 
