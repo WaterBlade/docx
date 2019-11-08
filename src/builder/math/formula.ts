@@ -9,11 +9,9 @@ import { DefinitionContent, ProcedureContent } from "./content";
 export class Formula {
     protected long: boolean = false;
     constructor(protected variable: Variable, protected expression: Expression) { }
-    get Variable() {
-        return this.variable;
-    }
-    get Expression() {
-        return this.expression;
+    public calc(){
+        this.variable.Value = this.expression.Value;
+        return this.variable.Value;
     }
 
     public setLong() {
@@ -97,6 +95,16 @@ export class ConditionFormula extends Formula {
         this.combines = combines;
     }
 
+    public calc(){
+        for(const [equ, exp] of this.combines){
+            if(equ.calc()){
+                this.expression = exp;
+                break;
+            }
+        }
+        return super.calc();
+    }
+
     public toDefinition() {
         const array = new EqArr();
         for(const [equ, exp] of this.combines){
@@ -116,15 +124,6 @@ export class ConditionFormula extends Formula {
         )
     }
 
-    public toProcedure(){
-        for(const [equ, exp] of this.combines){
-            if(equ.calc()){
-                this.expression = exp;
-                break;
-            }
-        }
-        return super.toProcedure();
-    }
 }
 
 export function formula(variable: Variable, expression: Expression){
