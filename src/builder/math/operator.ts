@@ -217,18 +217,18 @@ export function div(...exps: Array<Expression|number>){
     }
     return left;
 }
-export function minus(exp: Expression){
-    return new Minus(exp);
+export function minus(exp: Expression | number){
+    return new Minus(wrapperNum(exp));
 }
-export function inv(exp: Expression){
-    return new Inverse(exp);
+export function inv(exp: Expression | number){
+    return new Inverse(wrapperNum(exp));
 }
-export function fdiv(left: Expression, right: Expression){
-    return new FlatDiv(left, right);
+export function fdiv(left: Expression | number, right: Expression | number){
+    return new FlatDiv(wrapperNum(left), wrapperNum(right));
 }
-export function pow(base: Expression, index: number | Expression){
-    return new Pow(base, (index instanceof Expression) ? index: new Num(index))
+export function pow(base: Expression | number, index: number | Expression){
+    return new Pow(wrapperNum(base), wrapperNum(index))
 }
-export function root(base: Expression, index: number | Expression){
-    return new Radical(base, (index instanceof Expression) ? index : new Num(index));
+export function root(base: Expression | number, index: number | Expression){
+    return new Radical(wrapperNum(base), wrapperNum(index));
 }
