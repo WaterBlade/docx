@@ -2,7 +2,7 @@ import { Builder } from "./builder";
 import { DocX } from "./docX";
 import { Title } from "../component";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
-import { Var } from "./math";
+import { Variable } from "./math/variable";
 
 export class TitleBuilder extends Builder{
     private content: ContentInlineBuilder;
@@ -21,12 +21,12 @@ export class TitleBuilder extends Builder{
         return this;
     }
 
-    public variable(variable: Var){
+    public variable(variable: Variable){
         this.content.variable(variable);
         return this;
     }
 
-    public variableValue(variable: Var){
+    public variableValue(variable: Variable){
         this.content.variableValue(variable);
         return this;
     }

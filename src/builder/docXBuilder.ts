@@ -17,42 +17,32 @@ export class DocXBuilder{
         return await this.docx.saveBlob(path);
     }
 
-    public coverBuilder(){
+    public cover(){
         return new CoverBuilder(this.docx);
     }
 
-    public paragraphBuilder(){
+    public paragraph(){
         return new ParagraphBuilder(this.docx);
     }
 
-    public headingBuilder(level: number=1){
+    public heading(level: number=1){
         return new HeadingBuilder(this.docx, level);
     }
 
-    public tableBuilder(colCount: number, ref?: Reference){
+    public table(colCount: number, ref?: Reference){
         return new TableBuilder(this.docx, colCount, ref);
     }
 
-    public mathDefinitionBuilder(ref?: Reference){
+    public definition(ref?: Reference){
         return new MathDefinitionBuilder(this.docx, ref);
     }
 
-    public mathDeclarationBuilder(){
+    public declaration(){
         return new MathDeclarationBuilder(this.docx);
     }
 
-    public mathProcedureBuilder(){
+    public procedure(){
         return new MathProcedureBuilder(this.docx);
-    }
-
-    public paragraph(text: string) {
-        new ParagraphBuilder(this.docx).text(text);
-        return this; 
-    }
-
-    public heading(level : number = 1, text: string){
-        new HeadingBuilder(this.docx, level).text(text);
-        return this;
     }
 
 }

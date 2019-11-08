@@ -2,7 +2,10 @@ import {Builder} from "./builder";
 import {DocX} from "./docX";
 
 import {Paragraph} from "../component";
-import { Equation, IQuantative, Var, Expression, Formula } from "./math";
+import { Expression } from "./math/expression";
+import { Formula } from "./math/formula";
+import { Equation } from "./math/equation";
+import { Variable } from "./math/variable";
 import { Reference } from "./reference"
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 
@@ -48,7 +51,7 @@ export class ParagraphBuilder extends Builder{
         return this.builder.mathBuilder();
     }
 
-    public variable(variable: Var){
+    public variable(variable: Variable){
         this.mathBuilder().variable(variable);
         return this;
     }
@@ -68,7 +71,7 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public variableValue(variable: Var){
+    public variableValue(variable: Variable){
         this.mathBuilder().variableValue(variable);
         return this;
     }
@@ -83,9 +86,9 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public equationValue(equation: Equation, option: IQuantative={}){
+    public equationValue(equation: Equation ){
         this.mathBuilder().equationValue(
-            equation, option
+            equation
         );
         return this;
     }

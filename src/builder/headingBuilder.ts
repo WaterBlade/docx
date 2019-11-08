@@ -2,7 +2,7 @@ import {Builder} from "./builder";
 import {DocX} from "./docX";
 import { HeadingInCatalog, HeadingInContent, Catalog } from "../component";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
-import { Var } from "./math";
+import { Variable } from "./math/variable";
 
 
 export class HeadingBuilder extends Builder{
@@ -49,13 +49,13 @@ export class HeadingBuilder extends Builder{
         return this.builderCon.footnoteBuilder();
     }
 
-    public variable(variable: Var){
+    public variable(variable: Variable){
         this.builderCat.variable(variable);
         this.builderCon.variable(variable);
         return this;
     }
 
-    public variableValue(variable: Var){
+    public variableValue(variable: Variable){
         this.builderCat.variableValue(variable);
         this.builderCon.variableValue(variable);
         return this;

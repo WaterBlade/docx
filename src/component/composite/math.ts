@@ -33,7 +33,19 @@ export class MathInline extends XmlObjectComposite<MathObject>{
 } 
 
 
-export class MathPara extends XmlObjectComposite<MathInline>{
+export class MulMathInline extends XmlObjectComposite<MathInline>{
+    public toXml(root: Xml){
+        for(let i = 0; i< this.Length; i++){
+            root.build(this.xmlBuilders[i]);
+            if(i < this.Length - 1){
+                root.push(E('w:r').push(E('w:br')));
+            }
+        }
+    }
+}
+
+
+export class MathPara extends XmlObjectComposite<MathInline|MulMathInline>{
     public toXml(root: Xml){
         const mpara = root.newChild('m:oMathPara');
 

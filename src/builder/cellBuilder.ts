@@ -3,7 +3,7 @@ import { DocX } from "./docX";
 import { Row } from "../component/composite/row";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 import { Cell, Paragraph } from "../component";
-import { Var } from "./math";
+import { Variable } from "./math/variable";
 
 export class CellBuilder extends Builder{
     private content: ContentInlineBuilder;
@@ -27,12 +27,12 @@ export class CellBuilder extends Builder{
         return this;
     }
 
-    public variable(variable: Var){
+    public variable(variable: Variable){
         this.content.variable(variable);
         return this;
     }
 
-    public variableValue(variable: Var){
+    public variableValue(variable: Variable){
         this.content.variableValue(variable);
         return this;
     }

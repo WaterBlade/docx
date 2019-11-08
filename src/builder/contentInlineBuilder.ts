@@ -3,8 +3,11 @@ import {DocX} from "./docX";
 
 import { Text, } from "../component";
 import { FootnoteBuilder } from "./footnoteBuilder";
-import { MathInlineBuilder} from "./mathInline";
-import { Equation, IQuantative, Var, Expression, Formula } from "./math";
+import { MathInlineBuilder} from "./mathInlineBuilder";
+import { Expression } from "./math/expression";
+import { Formula } from "./math/formula";
+import { Equation } from "./math/equation";
+import { Variable } from "./math/variable";
 import { Reference } from "./reference"
 import { Composite } from "../xml";
 
@@ -44,7 +47,7 @@ export class ContentInlineBuilder extends Builder{
         return new MathInlineBuilder(this.composite);
     }
 
-    public variable(variable: Var){
+    public variable(variable: Variable){
         this.mathBuilder().variable(variable);
         return this;
     }
@@ -63,7 +66,7 @@ export class ContentInlineBuilder extends Builder{
         return this;
     }
 
-    public variableValue(variable: Var){
+    public variableValue(variable: Variable){
         this.mathBuilder().variableValue(variable);
         return this;
     }
@@ -78,9 +81,9 @@ export class ContentInlineBuilder extends Builder{
         return this;
     }
 
-    public equationValue(equation: Equation, option: IQuantative={}){
+    public equationValue(equation: Equation){
         this.mathBuilder().equationValue(
-            equation, option
+            equation
         );
         return this;
     }
