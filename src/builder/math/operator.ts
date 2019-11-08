@@ -118,7 +118,7 @@ class Pow extends Expression {
     }
 }
 class Radical extends Expression {
-    constructor(protected index: Expression, protected expression: Expression) {
+    constructor(protected expression: Expression, protected index: Expression) {
         super(Level3Precedence);
     }
     get Value(){
@@ -213,7 +213,7 @@ export function mul(...exps: Array<Expression|number>) {
 export function div(...exps: Array<Expression|number>){
     let left = wrapperNum(exps[0]) 
     for(let i = 1; i<exps.length; i++){
-        left = new Div(left, wrapperNum(exps[0]));
+        left = new Div(left, wrapperNum(exps[i]));
     }
     return left;
 }

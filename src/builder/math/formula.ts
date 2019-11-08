@@ -1,8 +1,8 @@
 import { Variable } from "./variable";
 import { Expression, AlignEqualSymbol, EqualSymbol } from "./expression";
-import { MathInline, MulMathInline, EqArr, MathText, Delimeter } from "/component";
+import { MathInline, MulMathInline, EqArr, MathText, Delimeter } from "../../component";
 import { Equation } from "./equation";
-import { Composite } from "/xml";
+import { Composite } from "../../xml";
 import { DefinitionContent, ProcedureContent } from "./content";
 
 // Formula

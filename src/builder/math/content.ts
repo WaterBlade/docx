@@ -1,4 +1,4 @@
-import { MulMathInline, MathInline, Declaration } from "/component";
+import { MulMathInline, MathInline, Declaration } from "../../component";
 
 class MathContent<T>{
     private items: T[];
