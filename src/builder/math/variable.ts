@@ -18,6 +18,10 @@ export class Variable extends Expression {
     get Value(){
         return this.value;
     }
+    public val(value: number){
+        this.Value = value;
+        return this;
+    }
     public subs(subscript: string | number | undefined) {
         if (this.subscript !== undefined) {
             this.subscript = `${subscript}`;
@@ -73,6 +77,10 @@ export class Variable extends Expression {
 }
 export class FractionVariable extends Variable {
     protected den_ = 1;
+    public den(val: number){
+        this.Den = val;
+        return this;
+    }
     set Den(val: number) {
         this.den_ = val;
         this.value = 1 / val;
