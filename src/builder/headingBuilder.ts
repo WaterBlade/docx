@@ -34,7 +34,7 @@ export class HeadingBuilder extends Builder{
         
     }
 
-    public text(str: string): HeadingBuilder{
+    public t(str: string): HeadingBuilder{
         this.builderCat.text(str);
         this.builderCon.text(str)
         return this;
@@ -49,13 +49,13 @@ export class HeadingBuilder extends Builder{
         return this.builderCon.footnoteBuilder();
     }
 
-    public variable(variable: Variable){
+    public var(variable: Variable){
         this.builderCat.variable(variable);
         this.builderCon.variable(variable);
         return this;
     }
 
-    public variableValue(variable: Variable){
+    public varVal(variable: Variable){
         this.builderCat.variableValue(variable);
         this.builderCon.variableValue(variable);
         return this;

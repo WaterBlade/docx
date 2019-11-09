@@ -23,7 +23,7 @@ export class ParagraphBuilder extends Builder{
         this.builder = new ContentInlineBuilder(this.docx, para);
     }
 
-    public text(str: string) {
+    public t(str: string) {
         this.builder.text(str);
         return this;
     }
@@ -51,12 +51,12 @@ export class ParagraphBuilder extends Builder{
         return this.builder.mathBuilder();
     }
 
-    public variable(variable: Variable){
+    public var(variable: Variable){
         this.mathBuilder().variable(variable);
         return this;
     }
 
-    public expression(expression: Expression){
+    public exp(expression: Expression){
         this.mathBuilder().expression(expression);
         return this;
     }
@@ -71,22 +71,22 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public variableValue(variable: Variable){
+    public varVal(variable: Variable){
         this.mathBuilder().variableValue(variable);
         return this;
     }
 
-    public expressionValue(expression: Expression){
+    public expVal(expression: Expression){
         this.mathBuilder().expressionValue(expression);
         return this;
     }
 
-    public formulaValue(fml: Formula){
+    public formulaVal(fml: Formula){
         this.mathBuilder().formulaValue(fml);
         return this;
     }
 
-    public equationValue(equation: Equation ){
+    public equationVal(equation: Equation ){
         this.mathBuilder().equationValue(
             equation
         );

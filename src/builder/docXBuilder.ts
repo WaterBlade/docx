@@ -21,11 +21,11 @@ export class DocXBuilder{
         return new CoverBuilder(this.docx);
     }
 
-    public paragraph(){
+    public p(){
         return new ParagraphBuilder(this.docx);
     }
 
-    public heading(level: number=1){
+    public h(level: number=1){
         return new HeadingBuilder(this.docx, level);
     }
 
