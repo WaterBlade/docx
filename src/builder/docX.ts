@@ -42,7 +42,7 @@ export class DocX{
         if(level > code.length){
             code.push(1);
         } else {
-            code.splice(level-1, code.length-level+1);
+            code.splice(level, code.length-level);
             code[level-1] += 1;
         }
         return code.join('.');

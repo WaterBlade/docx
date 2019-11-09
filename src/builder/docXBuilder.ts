@@ -11,14 +11,17 @@ import { CoverBuilder } from "./coverBuilder";
 
 export class DocXBuilder{
     private docx: DocX = new DocX();
+    private cov: CoverBuilder;
 
     public async saveBlob(path: string='example.docx'){
+        this.cov.build();
 
         return await this.docx.saveBlob(path);
     }
 
     public cover(){
-        return new CoverBuilder(this.docx);
+        this.cov = new CoverBuilder(this.docx);
+        return this.cov;
     }
 
     public p(){
