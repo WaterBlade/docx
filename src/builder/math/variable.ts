@@ -8,7 +8,7 @@ import { DeclarationContent } from "./content";
 // 
 export class Variable extends Expression {
     protected value: number = NaN;
-    protected subscript?: string;
+    protected subscript: string = '';
     protected inform?: string;
     protected precision: number = 3;
     protected unit_?: Expression;
@@ -24,7 +24,7 @@ export class Variable extends Expression {
         return this;
     }
     public subs(subscript: string | number | undefined) {
-        if (this.subscript !== undefined) {
+        if (subscript !== undefined) {
             this.subscript = `${subscript}`;
         }
         return this;
@@ -51,7 +51,7 @@ export class Variable extends Expression {
         return new DeclarationContent(this.toDeclaration());
     }
     public toVar(): XmlObject {
-        if (this.subscript) {
+        if (this.subscript !== '') {
             return new SubSript(new MathText(this.name), new MathText(this.subscript));
         }
         return new MathText(this.name);
