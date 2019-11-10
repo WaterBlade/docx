@@ -184,7 +184,7 @@ export function add(...exps: Array<Expression|number>) {
     for (let i = 1; i < exps.length; i++) {
         const right = wrapperNum(exps[i]);
         if(right instanceof Minus){
-            left = new Sub(left, right);
+            left = new Sub(left, right.expression);
         }else{
             left = new Add(left, right);
         }
@@ -203,7 +203,7 @@ export function mul(...exps: Array<Expression|number>) {
     for (let i = 1; i < exps.length; i++) {
         const right = wrapperNum(exps[i]);
         if(right instanceof Inverse){
-            left = new Div(left, right);
+            left = new Div(left, right.expression);
         }else{
             left =new Mul(left, right);
         }
