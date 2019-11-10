@@ -1,4 +1,4 @@
-import { MathText, SubSript, Div as DivComp } from "../../component";
+import { MathText, SubSript, Div as DivComp, SupSript } from "../../component";
 import { Declaration } from "../../component/composite/declaration";
 import { XmlObject, Composite } from "../../xml";
 import { Expression, TopPrecedence } from "./expression";
@@ -13,6 +13,22 @@ export class Variable extends Expression {
     protected precision: number = 3;
     protected unit_?: Expression;
     constructor(protected name: string) { super(TopPrecedence); }
+    clone(){
+        const v =  new Variable(this.name)
+        if(this.value){
+            v.val(this.value);
+        }
+        if(this.inform){
+            v.info(this.inform)
+        }
+        if(this.unit_){
+            v.unit(this.unit_)
+        }
+        if(this.subscript !== ''){
+            v.subs(this.subscript)
+        }
+        return v;
+    }
     set Value(value: number) {
         this.value = value;
     }
@@ -66,7 +82,7 @@ export class Variable extends Expression {
         if (Math.abs(this.value) > 10000 || Math.abs(this.value) < 0.0001 && this.value !== 0) {
             const sup = Math.floor(Math.log10(Math.abs(this.value)));
             const base = this.value / Math.pow(10, sup);
-            return new Composite(new MathText(Number(base).toFixed(this.precision)), new MathText('×', { sty: 'p' }), new SubSript(new MathText(10), new MathText(sup)));
+            return new Composite(new MathText(Number(base).toFixed(this.precision)), new MathText('×', { sty: 'p' }), new SupSript(new MathText(10), new MathText(sup)));
         }
         return new MathText(Number(this.value).toFixed(this.precision));
     }
@@ -81,6 +97,22 @@ export class Variable extends Expression {
 }
 export class FractionVariable extends Variable {
     protected den_ = 1;
+    clone(){
+        const v =  new FractionVariable(this.name)
+        if(this.value){
+            v.val(this.value);
+        }
+        if(this.inform){
+            v.info(this.inform)
+        }
+        if(this.unit_){
+            v.unit(this.unit_)
+        }
+        if(this.subscript !== ''){
+            v.subs(this.subscript)
+        }
+        return v;
+    }
     public den(val: number){
         this.Den = val;
         return this;
