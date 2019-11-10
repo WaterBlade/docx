@@ -79,10 +79,10 @@ export class Variable extends Expression {
         if (Math.abs(this.value) < 1e-9) {
             return new MathText(0);
         }
-        if (Math.abs(this.value) > 10000 || Math.abs(this.value) < 0.0001 && this.value !== 0) {
+        if (Math.abs(this.value) > 10000 || Math.abs(this.value) < 0.001 && this.value !== 0) {
             const sup = Math.floor(Math.log10(Math.abs(this.value)));
             const base = this.value / Math.pow(10, sup);
-            return new Composite(new MathText(Number(base).toFixed(this.precision)), new MathText('×', { sty: 'p' }), new SupSript(new MathText(10), new MathText(sup)));
+            return new Composite(new MathText(Number(base).toFixed(2)), new MathText('×', { sty: 'p' }), new SupSript(new MathText(10), new MathText(sup)));
         }
         return new MathText(Number(this.value).toFixed(this.precision));
     }
