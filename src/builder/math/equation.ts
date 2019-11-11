@@ -20,6 +20,12 @@ export abstract class Equation {
         this.unit_ = unit;
         return this;
     }
+    get Left(){
+        return this.left;
+    }
+    get Right(){
+        return this.right;
+    }
     public toInlineDefinition() {
         return new Composite(this.left.toVar(), new MathText(this.original, { sty: 'p' }), this.right.toVar())
     }
