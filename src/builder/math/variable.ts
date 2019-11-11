@@ -73,7 +73,7 @@ export class Variable extends Expression {
         return new MathText(this.name);
     }
     public toNum(): XmlObject {
-        if (this.value !== NaN) {
+        if (this.value === NaN) {
             throw Error(`Variable ${this.name} has not been assigned.`);
         }
         if (Math.abs(this.value) < 1e-9) {
