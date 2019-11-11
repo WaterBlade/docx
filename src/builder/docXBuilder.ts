@@ -7,6 +7,7 @@ import { MathDeclarationBuilder } from "./mathDeclarationBuilder";
 import { TableBuilder } from "./tableBuilder";
 import { Reference } from "./reference";
 import { CoverBuilder } from "./coverBuilder";
+import { PageBreak } from "../component";
 
 
 export class DocXBuilder{
@@ -30,6 +31,10 @@ export class DocXBuilder{
 
     public h(level: number=1){
         return new HeadingBuilder(this.docx, level);
+    }
+
+    public pageBreak(){
+        this.docx.content.push(new PageBreak());
     }
 
     public table(colCount: number, ref?: Reference){
