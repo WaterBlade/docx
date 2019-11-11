@@ -139,6 +139,18 @@ class Radical extends Expression {
         return new Rad(this.index.toNum(), this.expression.toNum(), hasIndex);
     }
 }
+class Abs extends Expression{
+    constructor(protected expression: Expression){super(TopPrecedence)}
+    get Value(){
+        return Math.abs(this.expression.Value);
+    }
+    public toVar(){
+        return new Delimeter(this.expression.toVar(), {left: '|', right: '|'});
+    }
+    public toNum(){
+        return new Delimeter(this.expression.toNum(), {left: '|', right: '|'});
+    }
+}
 class Parenthesis extends Expression {
     constructor(protected expression: Expression) { super(TopPrecedence); }
     get Value(){
@@ -216,6 +228,9 @@ export function div(...exps: Array<Expression|number>){
         left = new Div(left, wrapperNum(exps[i]));
     }
     return left;
+}
+export function abs(exp: Expression){
+    return new Abs(exp);
 }
 export function minus(exp: Expression | number){
     return new Minus(wrapperNum(exp));
