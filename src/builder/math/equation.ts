@@ -13,7 +13,7 @@ export abstract class Equation {
     protected unit_?: Expression;
     protected value: boolean = true;
 
-    constructor(protected left: Expression, protected right: Expression, protected tolerance: number = 0.001) {
+    constructor(protected left: Expression, protected right: Expression, protected tolerance: number = 0.0001) {
     }
     public abstract calc(): boolean;
     public unit(unit: Expression | undefined) {
