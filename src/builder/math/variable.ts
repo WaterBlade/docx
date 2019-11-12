@@ -2,7 +2,6 @@ import { MathText, SubSript, Div as DivComp, SupSript } from "../../component";
 import { Declaration } from "../../component/composite/declaration";
 import { XmlObject, Composite } from "../../xml";
 import { Expression, TopPrecedence } from "./expression";
-import { DeclarationContent } from "./content";
 //
 // Variable
 // 
@@ -62,9 +61,6 @@ export class Variable extends Expression {
             return new Declaration(this.toVar(), this.inform, this.unit_.toVar());
         }
         return new Declaration(this.toVar(), this.inform);
-    }
-    public toDclCnt(){
-        return new DeclarationContent(this.toDeclaration());
     }
     public toVar(): XmlObject {
         if (this.subscript !== '') {

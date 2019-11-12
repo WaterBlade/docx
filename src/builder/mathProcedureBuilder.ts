@@ -2,8 +2,7 @@ import { Builder } from "./builder";
 import { Procedure } from "../component";
 import { DocX } from "./docX";
 import { Formula } from "./math/formula";
-import { Equation } from "./math/equation";
-import { ProcedureContent } from "./math/content";
+import { Relation } from "./math/relation";
 
 export class MathProcedureBuilder extends Builder {
     protected procedure = new Procedure();
@@ -20,16 +19,11 @@ export class MathProcedureBuilder extends Builder {
 
     }
 
-    public equation(...equations: Equation[]) {
+    public equation(...equations: Relation[]) {
         for (const equation of equations) {
             this.procedure.push(equation.toProcedure());
         }
 
     }
 
-    public content(...contents: ProcedureContent[]){
-        for (const c of contents){
-            this.procedure.push(...c.Contents);
-        }
-    }
 }

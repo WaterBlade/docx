@@ -4,7 +4,7 @@ import {DocX} from "./docX";
 import {Paragraph} from "../component";
 import { Expression } from "./math/expression";
 import { Formula } from "./math/formula";
-import { Equation } from "./math/equation";
+import { Relation } from "./math/relation";
 import { Variable } from "./math/variable";
 import { Reference } from "./reference"
 import { ContentInlineBuilder } from "./contentInlineBuilder";
@@ -66,7 +66,7 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public equation(equation: Equation){
+    public equation(equation: Relation){
         this.mathBuilder().equation(equation);
         return this;
     }
@@ -86,7 +86,7 @@ export class ParagraphBuilder extends Builder{
         return this;
     }
 
-    public equationVal(equation: Equation ){
+    public equationVal(equation: Relation ){
         this.mathBuilder().equationValue(
             equation
         );

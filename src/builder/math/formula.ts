@@ -1,9 +1,8 @@
 import { Variable } from "./variable";
 import { Expression, AlignEqualSymbol, EqualSymbol } from "./expression";
 import { MathInline, MulMathInline, EqArr, MathText, Delimeter } from "../../component";
-import { Equation } from "./equation";
+import { Relation } from "./relation";
 import { Composite } from "../../xml";
-import { DefinitionContent, ProcedureContent } from "./content";
 
 // Formula
 export class Formula {
@@ -33,10 +32,6 @@ export class Formula {
             AlignEqualSymbol,
             this.expression.toVar()
         )
-    }
-
-    public toDefCnt(){
-        return new DefinitionContent(this.toDefinition());
     }
 
     public toInlineProcedure() {
@@ -83,14 +78,11 @@ export class Formula {
 
     }
 
-    public toProcCnt(){
-        return new ProcedureContent(this.toProcedure());
-    }
 }
 
 export class ConditionFormula extends Formula {
-    protected combines: Array<[Equation, Expression]>
-    constructor(variable: Variable, ...combines: Array<[Equation, Expression]>) {
+    protected combines: Array<[Relation, Expression]>
+    constructor(variable: Variable, ...combines: Array<[Relation, Expression]>) {
         super(variable, combines[0][1]);
         this.combines = combines;
     }
@@ -130,6 +122,6 @@ export function formula(variable: Variable, expression: Expression){
     return new Formula(variable, expression);
 }
 
-export function condition(variable: Variable,...combines: Array<[Equation, Expression]>){
+export function condition(variable: Variable,...combines: Array<[Relation, Expression]>){
     return new ConditionFormula(variable, ...combines);
 }

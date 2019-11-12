@@ -2,11 +2,10 @@ import { MathInline, MulMathInline, MathText} from "../../component";
 import { Expression, AlignEqualSymbol, EqualSymbol } from "./expression";
 import { Composite } from "../../xml";
 import { Variable, Num } from "./variable";
-import { DefinitionContent, ProcedureContent } from "./content";
 //
 // Equation
 // 
-export abstract class Equation {
+export abstract class Relation {
     protected original: string = '=';
     protected oppsite: string = '≠';
     protected long: boolean = false;
@@ -26,14 +25,14 @@ export abstract class Equation {
     get Right(){
         return this.right;
     }
+    public setLong(){
+        this.long = true;
+    }
     public toInlineDefinition() {
         return new Composite(this.left.toVar(), new MathText(this.original, { sty: 'p' }), this.right.toVar())
     }
     public toDefinition() {
         return new MathInline(this.left.toVar(), AlignEqualSymbol, this.right.toVar());
-    }
-    public toDefCnt() {
-        return new DefinitionContent(this.toDefinition());
     }
     protected toItemProcedure(item: Expression, symbol: MathText) {
         const left = new Composite();
@@ -80,17 +79,14 @@ export abstract class Equation {
             return equation;
         }
     }
-    public toProcCnt() {
-        return new ProcedureContent(this.toProcedure());
-    }
 }
-class Equal extends Equation {
+class Equal extends Relation {
     public calc() {
         this.value = Math.abs(this.left.Value - this.right.Value) < this.tolerance;
         return this.value;
     }
 }
-class NotEqual extends Equation {
+class NotEqual extends Relation {
     protected original = '≠';
     protected oppsite = '=';
     public calc() {
@@ -98,7 +94,7 @@ class NotEqual extends Equation {
         return this.value;
     }
 }
-class Greater extends Equation {
+class Greater extends Relation {
     protected original = '>';
     protected oppsite = '≤';
     public calc() {
@@ -106,7 +102,7 @@ class Greater extends Equation {
         return this.value;
     }
 }
-class GreaterOrEqual extends Equation {
+class GreaterOrEqual extends Relation {
     protected original = '≥';
     protected oppsite = '<';
     public calc() {
@@ -114,7 +110,7 @@ class GreaterOrEqual extends Equation {
         return this.value;
     }
 }
-class Lesser extends Equation {
+class Lesser extends Relation {
     protected original = '<';
     protected oppsite = '≥';
     public calc() {
@@ -122,7 +118,7 @@ class Lesser extends Equation {
         return this.value;
     }
 }
-class LesserOrEqual extends Equation {
+class LesserOrEqual extends Relation {
     protected original = '≤';
     protected oppsite = '>';
     public calc() {
@@ -130,7 +126,7 @@ class LesserOrEqual extends Equation {
         return this.value;
     }
 }
-class Range extends Equation {
+class RangeRelation extends Relation {
     protected leftTest: boolean;
     protected rightTest: boolean;
     constructor(left: number, protected expression: Expression, right: number) {
@@ -204,5 +200,5 @@ export function LE(left: Expression, right: Expression) {
     return new LesserOrEqual(left, right);
 }
 export function RN(left: number, exp: Expression, right: number) {
-    return new Range(left, exp, right);
+    return new RangeRelation(left, exp, right);
 }

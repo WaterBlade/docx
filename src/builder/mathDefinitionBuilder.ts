@@ -1,10 +1,9 @@
 import { Builder } from "./builder";
 import { DocX } from "./docX";
 import { Formula } from "./math/formula";
-import { Equation } from "./math/equation";
+import { Relation } from "./math/relation";
 import { Definition, } from "../component";
 import { Reference } from "./reference";
-import { DefinitionContent } from "./math/content";
 
 export class MathDefinitionBuilder extends Builder {
     protected definition: Definition;
@@ -27,16 +26,9 @@ export class MathDefinitionBuilder extends Builder {
         }
     }
 
-    public equation(...equations: Equation[]) {
+    public equation(...equations: Relation[]) {
         for (const equation of equations) {
             this.definition.push(equation.toDefinition());
-        }
-
-    }
-
-    public content(...contents: DefinitionContent[]){
-        for(const c of contents){
-            this.definition.push(...c.Contents)
         }
 
     }

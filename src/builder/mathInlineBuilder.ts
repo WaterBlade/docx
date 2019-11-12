@@ -1,7 +1,7 @@
 import {MathText, MathInline} from "../component";
 import { Expression, } from "./math/expression";
 import { Formula } from "./math/formula";
-import { Equation } from "./math/equation";
+import { Relation } from "./math/relation";
 import { Variable } from "./math/variable";
 import { Composite } from "../xml";
 
@@ -12,7 +12,7 @@ export class MathInlineBuilder{
         this.composite.push(this.mathInline);
     }
 
-    public equation(equation: Equation){
+    public equation(equation: Relation){
         this.mathInline.push(equation.toInlineDefinition());
     }
 
@@ -30,7 +30,7 @@ export class MathInlineBuilder{
         this.mathInline.push(left.toVar());
     }
 
-    public equationValue(equation: Equation){ 
+    public equationValue(equation: Relation){ 
         this.mathInline.push(
             equation.toInlineProcedure()
         );
