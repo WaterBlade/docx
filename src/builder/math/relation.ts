@@ -8,7 +8,8 @@ import { Variable, Num } from "./variable";
 export abstract class Relation {
     protected original: string = '=';
     protected oppsite: string = '≠';
-    protected long: boolean = false;
+    protected leftLong: boolean = false;
+    protected rightLong: boolean = false;
     protected unit_?: Expression;
     protected value: boolean = true;
 
@@ -25,8 +26,11 @@ export abstract class Relation {
     get Right(){
         return this.right;
     }
-    public setLong(){
-        this.long = true;
+    public setLeftLong(){
+        this.leftLong = true;
+    }
+    public setRightLong(){
+        this.rightLong = true;
     }
     public toInlineDefinition() {
         return new Composite(this.left.toVar(), new MathText(this.original, { sty: 'p' }), this.right.toVar())
@@ -58,17 +62,31 @@ export abstract class Relation {
     }
     public toProcedure() {
         let symbol = this.value ? this.original : this.oppsite;
-        if (this.long) {
-            const left = this.toItemProcedure(this.left, AlignEqualSymbol);
-            const right = this.toItemProcedure(this.right, AlignEqualSymbol);
+        if (this.leftLong || this.rightLong) {
+            const mline = new MulMathInline();
+            if(this.leftLong){
+                mline.push(
+                    new MathInline(this.left.toVar()),
+                    new MathInline(AlignEqualSymbol, this.left.toNum()),
+                    new MathInline(AlignEqualSymbol, this.left.toResult())
+                )
+            }else{
+                mline.push(new MathInline(this.toItemProcedure(this.left, EqualSymbol)));
+            }
+            mline.push(
+                new MathInline( new MathText(symbol, { sty: 'p', align: true }))
+            );
+            if(this.rightLong){
+                mline.push(
+                    new MathInline(this.right.toVar()),
+                    new MathInline(AlignEqualSymbol, this.right.toNum()),
+                    new MathInline(AlignEqualSymbol, this.right.toResult())
+                )
+            }else{
+                mline.push(new MathInline(this.toItemProcedure(this.right, EqualSymbol)));
+            }
+            return mline;
 
-            return new MulMathInline(
-                new MathInline(left),
-                new MathInline(
-                    new MathText(symbol, { sty: 'p', align: true })
-                ),
-                new MathInline(right)
-            )
         } else {
             const equation = new MathInline();
             equation.push(
