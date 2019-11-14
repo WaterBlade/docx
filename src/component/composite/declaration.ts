@@ -1,4 +1,4 @@
-import {Xml, E, XmlObject, Composite} from "../../xml";
+import {Xml, E, XmlObject, Composite} from "../xml";
 
 
 export class Declaration extends Composite{

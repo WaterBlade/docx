@@ -1,6 +1,6 @@
 import {ParagraphBuilder} from "./paragraphBuilder";
 import {HeadingBuilder} from "./headingBuilder";
-import {DocX} from "./docX";
+import {DocX} from "../component/docX";
 import { MathDefinitionBuilder } from "./mathDefinitionBuilder";
 import { MathProcedureBuilder } from "./mathProcedureBuilder";
 import { MathDeclarationBuilder } from "./mathDeclarationBuilder";

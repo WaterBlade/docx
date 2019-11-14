@@ -2,7 +2,7 @@ import { Variable } from "./variable";
 import { Expression} from "./expression";
 import { MathInline, MulMathInline, EqArr, MathText, Delimeter } from "../../component";
 import { Relation } from "./relation";
-import { Composite } from "../../xml";
+import { Composite } from "../../component/xml";
 
 // Formula
 export class Formula {

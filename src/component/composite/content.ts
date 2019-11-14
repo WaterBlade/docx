@@ -1,4 +1,4 @@
-import {Xml, Composite} from "../../xml";
+import {Xml, Composite} from "../xml";
 
 
 export class Content extends Composite{

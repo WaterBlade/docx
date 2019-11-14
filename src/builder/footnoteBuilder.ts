@@ -1,7 +1,7 @@
 import {Builder} from "./builder";
-import {DocX} from "./docX";
+import {DocX} from "../component/docX";
 import { Footnote, FootnoteMark, Text } from "../component";
-import { Composite } from "../xml";
+import { Composite } from "../component/xml";
 
 
 export class FootnoteBuilder extends Builder{

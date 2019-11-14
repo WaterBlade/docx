@@ -1,6 +1,6 @@
 import { MathInline, MulMathInline, MathText} from "../../component";
 import { Expression, AlignEqualSymbol, EqualSymbol } from "./expression";
-import { Composite } from "../../xml";
+import { Composite } from "../../component/xml";
 import { Variable, Num } from "./variable";
 //
 // Equation

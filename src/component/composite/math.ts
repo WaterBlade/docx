@@ -1,4 +1,4 @@
-import {Xml, XmlObject, E, XmlObjectComposite} from "../../xml";
+import {Xml, XmlObject, E, XmlObjectComposite} from "../xml";
 import { MathText } from "../element";
 
 

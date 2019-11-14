@@ -1,4 +1,4 @@
-import {Xml, E, XmlObject} from "../../xml";
+import {Xml, E, XmlObject} from "../xml";
 
 export class Text implements XmlObject{
     private font?: string;

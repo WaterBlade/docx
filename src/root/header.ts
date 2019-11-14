@@ -1,4 +1,4 @@
-import {Xml} from "../xml";
+import {Xml} from "../component/xml";
 import {Root} from "./root";
 
 

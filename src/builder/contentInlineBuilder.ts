@@ -1,5 +1,5 @@
 import {Builder} from "./builder";
-import {DocX} from "./docX";
+import {DocX} from "../component/docX";
 
 import { Text, } from "../component";
 import { FootnoteBuilder } from "./footnoteBuilder";
@@ -9,7 +9,7 @@ import { Formula } from "./math/formula";
 import { Relation } from "./math/relation";
 import { Variable } from "./math/variable";
 import { Reference } from "./reference"
-import { Composite } from "../xml";
+import { Composite } from "../component/xml";
 
 export class ContentInlineBuilder extends Builder{
     private composite = new Composite();

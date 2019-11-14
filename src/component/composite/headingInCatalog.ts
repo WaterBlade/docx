@@ -1,4 +1,4 @@
-import {Xml, E, Composite} from "../../xml";
+import {Xml, E, Composite} from "../xml";
 
 export class HeadingInCatalog extends Composite{
     constructor(

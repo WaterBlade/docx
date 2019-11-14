@@ -1,5 +1,5 @@
 import { MathText, SubSript, } from "../../component";
-import { XmlObject, Composite } from "../../xml";
+import { XmlObject, Composite } from "../../component/xml";
 
 export const Level1Precedence = 1;
 export const Level2Precedence = 2;

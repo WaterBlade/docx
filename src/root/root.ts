@@ -1,4 +1,4 @@
-import { XmlObject } from "../xml";
+import { XmlObject } from "../component/xml";
 
 export abstract class Root{
     protected xmlBuilders: XmlObject[] = [];

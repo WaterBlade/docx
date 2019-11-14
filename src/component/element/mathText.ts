@@ -1,4 +1,4 @@
-import {Xml, XmlObject, E} from "../../xml";
+import {Xml, XmlObject, E} from "../xml";
 
 export class MathText implements XmlObject{
     constructor(

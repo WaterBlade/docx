@@ -3,7 +3,7 @@ import { Expression, } from "./math/expression";
 import { Formula } from "./math/formula";
 import { Relation } from "./math/relation";
 import { Variable } from "./math/variable";
-import { Composite } from "../xml";
+import { Composite } from "../component/xml";
 
 
 export class MathInlineBuilder{

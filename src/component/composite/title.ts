@@ -1,4 +1,4 @@
-import { Xml, E, Composite } from "../../xml";
+import { Xml, E, Composite } from "../xml";
 
 export class Title extends Composite{
     private keepNext?: boolean

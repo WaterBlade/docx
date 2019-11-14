@@ -1,4 +1,4 @@
-import { Xml } from "../../xml";
+import { Xml } from "../xml";
 import { MathPara } from "./math";
 export class Procedure extends MathPara {
     public toXml(root: Xml) {

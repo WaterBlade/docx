@@ -1,8 +1,7 @@
 import { Builder } from "./builder";
-import { DocX } from "./docX";
+import { DocX } from "../component/docX";
 import { Variable } from "./math/variable";
 import { Paragraph, Text } from "../component";
-import { DeclarationContent } from "./math/content";
 
 export class MathDeclarationBuilder extends Builder {
     constructor(protected docx: DocX) {
@@ -16,9 +15,4 @@ export class MathDeclarationBuilder extends Builder {
         }
     }
     
-    public content(...contents: DeclarationContent[]){
-        for(const c of contents){
-            this.docx.content.push(...c.Contents);
-        }
-    }
 }

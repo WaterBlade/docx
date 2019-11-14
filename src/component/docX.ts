@@ -1,4 +1,4 @@
-import {Catalog, Content, Cover} from "../component";
+import {Catalog, Content, Cover} from ".";
 import {Document, Footnotes, Header, Relationships} from "../root";
 import JSZip = require("jszip");
 

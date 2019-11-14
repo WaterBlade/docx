@@ -1,5 +1,5 @@
 import {Ref, Bookmark} from "../component";
-import { DocX } from "./docX";
+import { DocX } from "../component/docX";
 
 export class Reference {
     private reference: Ref = new Ref();

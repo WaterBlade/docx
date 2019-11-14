@@ -1,4 +1,4 @@
-import {Xml, E, Composite,} from "../../xml";
+import {Xml, E, Composite,} from "../xml";
 
 export class Paragraph extends Composite{
     private spacing?: {before?: number, after?: number, line?: number};

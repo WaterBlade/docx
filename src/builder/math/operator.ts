@@ -1,5 +1,5 @@
 import { MathText, SubSript, SupSript, Rad, Delimeter, Div as DivComp } from "../../component";
-import { Composite } from "../../xml";
+import { Composite } from "../../component/xml";
 import { Num, num } from "./variable";
 import { Expression, Level1Precedence, Level2Precedence, Level3Precedence, TopPrecedence } from "./expression";
 //

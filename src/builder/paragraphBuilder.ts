@@ -1,5 +1,5 @@
 import {Builder} from "./builder";
-import {DocX} from "./docX";
+import {DocX} from "../component/docX";
 
 import {Paragraph} from "../component";
 import { Expression } from "./math/expression";

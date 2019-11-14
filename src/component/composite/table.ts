@@ -1,4 +1,4 @@
-import { Xml, E,  XmlObjectComposite } from "../../xml";
+import { Xml, E,  XmlObjectComposite } from "../xml";
 import { Row } from "./row";
 
 export class Table extends XmlObjectComposite<Row>{

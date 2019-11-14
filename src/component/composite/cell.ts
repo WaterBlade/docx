@@ -1,4 +1,4 @@
-import {Xml, E, XmlObjectComposite} from "../../xml";
+import {Xml, E, XmlObjectComposite} from "../xml";
 import { Paragraph } from "./paragraph";
 
 type BorderName = 'top' | 'bottom' | 'left' | 'right';

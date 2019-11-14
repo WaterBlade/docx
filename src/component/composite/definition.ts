@@ -1,4 +1,4 @@
-import {Xml, E} from "../../xml";
+import {Xml, E} from "../xml";
 import { MathPara } from "./math";
 import { Bookmark } from "../element";
 

@@ -1,6 +1,6 @@
 import { MathText, SubSript, Div as DivComp, SupSript } from "../../component";
 import { Declaration } from "../../component/composite/declaration";
-import { XmlObject, Composite } from "../../xml";
+import { XmlObject, Composite } from "../../component/xml";
 import { Expression, TopPrecedence } from "./expression";
 //
 // Variable
