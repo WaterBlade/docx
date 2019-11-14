@@ -1,13 +1,12 @@
 import {ParagraphBuilder} from "./paragraphBuilder";
 import {HeadingBuilder} from "./headingBuilder";
-import {DocX} from "../component/docX";
 import { MathDefinitionBuilder } from "./mathDefinitionBuilder";
 import { MathProcedureBuilder } from "./mathProcedureBuilder";
 import { MathDeclarationBuilder } from "./mathDeclarationBuilder";
 import { TableBuilder } from "./tableBuilder";
 import { Reference } from "./reference";
 import { CoverBuilder } from "./coverBuilder";
-import { PageBreak } from "../component";
+import { PageBreak, DocX } from "../component";
 
 
 export class DocXBuilder{
