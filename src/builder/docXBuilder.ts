@@ -6,7 +6,8 @@ import { MathDeclarationBuilder } from "./mathDeclarationBuilder";
 import { TableBuilder } from "./tableBuilder";
 import { Reference } from "./reference";
 import { CoverBuilder } from "./coverBuilder";
-import { PageBreak, DocX } from "../component";
+import { PageBreak } from "../component";
+import { DocX } from "../root";
 
 
 export class DocXBuilder{

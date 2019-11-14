@@ -1,5 +1,5 @@
 import { Builder } from "./builder";
-import { DocX } from "../component/docX";
+import { DocX } from "../root/docX";
 import { Row } from "../component/composite/row";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 import { Cell, Paragraph } from "../component";

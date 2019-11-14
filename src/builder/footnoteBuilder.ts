@@ -1,5 +1,5 @@
 import {Builder} from "./builder";
-import {DocX} from "../component/docX";
+import {DocX} from "../root/docX";
 import { Footnote, FootnoteMark, Text } from "../component";
 import { Composite } from "../component/xml";
 

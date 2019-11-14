@@ -1,6 +1,6 @@
 import { Builder } from "./builder";
 import { Procedure } from "../component";
-import { DocX } from "../component/docX";
+import { DocX } from "../root/docX";
 import { Formula } from "./math/formula";
 import { Relation } from "./math/relation";
 

@@ -1,5 +1,5 @@
 import { Builder } from "./builder";
-import { DocX } from "../component/docX";
+import { DocX } from "../root/docX";
 import { Title } from "../component";
 import { ContentInlineBuilder } from "./contentInlineBuilder";
 import { Variable } from "./math/variable";

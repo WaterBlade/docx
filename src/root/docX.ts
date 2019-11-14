@@ -1,5 +1,5 @@
-import {Catalog, Content, Cover} from ".";
-import {Document, Footnotes, Header, Relationships} from "../root";
+import {Catalog, Content, Cover} from "../component";
+import {Document, Footnotes, Header, Relationships} from ".";
 import JSZip = require("jszip");
 
 interface IFile{
