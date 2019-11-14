@@ -28,9 +28,11 @@ export abstract class Relation {
     }
     public setLeftLong(){
         this.leftLong = true;
+        return this;
     }
     public setRightLong(){
         this.rightLong = true;
+        return this;
     }
     public toInlineDefinition() {
         return new Composite(this.left.toVar(), new MathText(this.original, { sty: 'p' }), this.right.toVar())
