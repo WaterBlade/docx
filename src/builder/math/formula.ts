@@ -148,11 +148,11 @@ export function gtFormula(variable: Variable, expression: Expression){
     return new GTFormula(variable, expression);
 }
 export function geFormula(variable: Variable, expression: Expression){
-    return new GTFormula(variable, expression);
+    return new GEFormula(variable, expression);
 }
 export function ltFormula(variable: Variable, expression: Expression){
-    return new GTFormula(variable, expression);
+    return new LTFormula(variable, expression);
 }
 export function leFormula(variable: Variable, expression: Expression){
-    return new GTFormula(variable, expression);
+    return new LEFormula(variable, expression);
 }
