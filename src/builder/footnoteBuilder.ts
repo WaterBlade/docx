@@ -12,7 +12,7 @@ export class FootnoteBuilder extends Builder{
         this.composite.push(new FootnoteMark(id));
         
         this.footnote = new Footnote(id);
-        this.docx.footnotes.child(this.footnote);
+        this.docx.footnotes.push(this.footnote);
     }
 
     public text(str: string){

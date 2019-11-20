@@ -5,6 +5,7 @@ export class Paragraph extends Composite{
     private indentChar?: number;
     private justify?: string;
     private notSnapToGrid: boolean = false;
+    private keepNext: boolean = false;
 
     set Spacing(val: {before?: number; after?: number; line?: number}){
         this.spacing = val;
@@ -20,6 +21,10 @@ export class Paragraph extends Composite{
 
     set NotSnapToGrid(val: boolean){
         this.notSnapToGrid = val;
+    }
+
+    set KeepNext(val: boolean){
+        this.keepNext = val;
     }
 
     public toXml(root: Xml){
@@ -41,6 +46,9 @@ export class Paragraph extends Composite{
         }
         if(this.notSnapToGrid){
             prop.push(E('w:snapToGrid').attr('w:val', !this.notSnapToGrid))
+        }
+        if(this.keepNext){
+            prop.push(E('w:keepNext'));
         }
         
         for(const item of this.xmlBuilders){

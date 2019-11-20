@@ -8,6 +8,7 @@ import { Reference } from "./reference";
 import { CoverBuilder } from "./coverBuilder";
 import { PageBreak } from "../component";
 import { DocX } from "../root";
+import { FigureBuilder } from "./figureBuilder";
 
 
 export class DocXBuilder{
@@ -37,6 +38,10 @@ export class DocXBuilder{
         this.docx.content.push(new PageBreak());
     }
 
+    public figure(ref?: Reference){
+        return new FigureBuilder(this.docx, ref);
+    }
+
     public table(colCount: number, ref?: Reference){
         return new TableBuilder(this.docx, colCount, ref);
     }
@@ -52,5 +57,9 @@ export class DocXBuilder{
     public procedure(){
         return new MathProcedureBuilder(this.docx);
     }
+
+}
+
+export function demo(){
 
 }

@@ -13,6 +13,8 @@ export class DocX{
     public footnotes = new Footnotes();
     public header = new Header();
 
+    public images: {path: string, blob: Blob}[]=[];
+
     public cover?: Cover;
     public catalog?: Catalog;
     public content: Content = new Content(
@@ -60,6 +62,9 @@ export class DocX{
         for (let file of files) {
             zip.file(file.path, file.content);
         }
+        for (const file of this.images){
+            zip.file(file.path, file.blob);
+        }
 
         const blob = await zip.generateAsync({
             type: "blob",
@@ -74,12 +79,12 @@ export class DocX{
     private process_roots(): void{
 
         if(this.cover){
-            this.document.child(this.cover);
+            this.document.push(this.cover);
         }
         if(this.catalog){
-            this.document.child(this.catalog);
+            this.document.push(this.catalog);
         }
-        this.document.child(this.content);
+        this.document.push(this.content);
 
     }
 

@@ -3,13 +3,10 @@ import {Root} from "./root";
 
 
 export class Relationships extends Root{
-    private rel_id: number = 0;
+    private relId: number = 12;
 
     get RelationshipId(){
-        const id = this.rel_id;
-        const symbol = `rId${id}`;
-        this.rel_id += 1;
-        return {id, symbol};
+        return {id: this.relId, symbol: `rId${this.relId++}`}
     }
 
     get FooterRelationshipId(){
