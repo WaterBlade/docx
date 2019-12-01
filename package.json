@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register src/tests/**/*.ts",
+    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register src/**/*.test.ts",
     "build": "npm run webpack",
     "webpack": "rimraf ./build && webpack",
     "tsc": "rimraf ./build && tsc -p ."

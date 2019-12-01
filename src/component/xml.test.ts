@@ -1,4 +1,4 @@
-import {Xml} from '../component/xml';
+import {Xml} from './xml';
 
 const {
     describe,

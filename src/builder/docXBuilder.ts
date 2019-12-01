@@ -7,7 +7,7 @@ import { TableBuilder } from "./tableBuilder";
 import { Reference } from "./reference";
 import { CoverBuilder } from "./coverBuilder";
 import { PageBreak } from "../component";
-import { DocX } from "../root";
+import { DocX } from "@/root";
 import { FigureBuilder } from "./figureBuilder";
 
 

@@ -1,4 +1,4 @@
-import { V, add, sub, mul, div, root } from "../builder/math";
+import { V, add, sub, mul, div, root } from ".";
 
 const {
     describe,

@@ -14,8 +14,11 @@ module.exports = {
     },
 
     resolve: {
-        extensions: [".tsx", ".ts", ".js"],
-        modules: [path.resolve("./src"), "node_modules"],
+        extensions: ["ts"],
+        modules: [path.resolve("./src")],
+        alias:{
+            '@': './src'
+        }
     },
 
     module: {
