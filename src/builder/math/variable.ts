@@ -164,3 +164,6 @@ export function V(name: string) { return new Variable(name); }
 export function FV(name: string) { return new FractionVariable(name); }
 export function num(n: number): Num { return new Num(n); }
 export function unit(name: string): Unit { return new Unit(name); }
+export function wrapperNum(item: Expression | number){
+    return item instanceof Expression ? item : num(item);
+}

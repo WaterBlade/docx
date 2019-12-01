@@ -1,5 +1,6 @@
 import { Func } from "../../component";
 import { Expression, TopPrecedence } from "./expression";
+import { wrapperNum } from "./variable";
 //
 // Function
 //
@@ -75,13 +76,13 @@ class Ln extends FunctionBase {
         return Math.log(this.expression.Value);
     }
 }
-export function sin(exp: Expression) { return new Sin(exp); }
-export function cos(exp: Expression) { return new Cos(exp); }
-export function tan(exp: Expression) { return new Tan(exp); }
-export function cot(exp: Expression) { return new Cot(exp); }
-export function asin(exp: Expression) { return new ArcSin(exp); }
-export function acos(exp: Expression) { return new ArcCos(exp); }
-export function atan(exp: Expression) { return new ArcTan(exp); }
-export function acot(exp: Expression) { return new ArcCot(exp); }
-export function log(exp: Expression) { return new Log(exp); }
-export function ln(exp: Expression) { return new Ln(exp); }
+export function sin(exp: Expression | number) { return new Sin(wrapperNum(exp)); }
+export function cos(exp: Expression | number) { return new Cos(wrapperNum(exp)); }
+export function tan(exp: Expression | number) { return new Tan(wrapperNum(exp)); }
+export function cot(exp: Expression | number) { return new Cot(wrapperNum(exp)); }
+export function asin(exp: Expression | number) { return new ArcSin(wrapperNum(exp)); }
+export function acos(exp: Expression | number) { return new ArcCos(wrapperNum(exp)); }
+export function atan(exp: Expression | number) { return new ArcTan(wrapperNum(exp)); }
+export function acot(exp: Expression | number) { return new ArcCot(wrapperNum(exp)); }
+export function log(exp: Expression | number) { return new Log(wrapperNum(exp)); }
+export function ln(exp: Expression | number) { return new Ln(wrapperNum(exp)); }

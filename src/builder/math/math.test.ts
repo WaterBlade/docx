@@ -1,4 +1,5 @@
 import { V, add, sub, mul, div, root } from ".";
+import { sin, cos, ln } from "./function";
 
 const {
     describe,
@@ -26,5 +27,14 @@ describe('simple operator', ()=>{
     })
     it('root', ()=>{
         expect(root(b, 2).Value).to.closeTo(2, 0.1);
+    })
+    it('sin', ()=>{
+        expect(sin(Math.PI / 2).Value).to.closeTo(1, 0.1);
+    })
+    it('cos', ()=>{
+        expect(cos(Math.PI / 2).Value).to.closeTo(0, 0.1);
+    })
+    it('ln', ()=>{
+        expect(ln(1).Value).to.closeTo(0, 0.1);
     })
 })

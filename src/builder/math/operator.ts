@@ -1,6 +1,6 @@
 import { MathText, SubSript, SupSript, Rad, Delimeter, Div as DivComp } from "../../component";
 import { Composite } from "../../component/xml";
-import { Num, num } from "./variable";
+import { Num, wrapperNum } from "./variable";
 import { Expression, Level1Precedence, Level2Precedence, Level3Precedence, TopPrecedence } from "./expression";
 //
 // Operator
@@ -186,9 +186,6 @@ class Inverse extends Expression{
     public toNum(){
         return new Div(new Num(1), this.expression).toNum();
     }
-}
-function wrapperNum(item: Expression | number){
-    return item instanceof Expression ? item : num(item);
 }
 export function neg(exp: Expression) { return new Neg(exp); }
 export function add(...exps: Array<Expression|number>) {
