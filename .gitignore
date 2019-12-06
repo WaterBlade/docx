@@ -63,3 +63,6 @@ tmp
 
 # nyc
 .nyc_output
+
+# docx
+*.docx
