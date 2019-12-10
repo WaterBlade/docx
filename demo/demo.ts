@@ -1,5 +1,14 @@
-import {DocXBuilder} from '../src';
+import { DocXBuilder } from '../src';
 
 const builder = new DocXBuilder();
 builder.p().t('hello');
-builder.saveFile('demo.docx');
+const zip = builder.generateZip();
+
+const fs = require('fs');
+
+zip.generateNodeStream({
+    type: 'nodebuffer',
+    streamFiles: true,
+    compression: "DEFLATE"
+}).pipe(fs.createWriteStream('exmple.docx'));
+

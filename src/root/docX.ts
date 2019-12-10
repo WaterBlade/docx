@@ -51,7 +51,7 @@ export class DocX {
 
     }
 
-    private generateZip() {
+    public generateZip() {
         this.process_roots();
         const files = this.generate_files();
         const zip = new JSZip();
@@ -78,17 +78,6 @@ export class DocX {
 
     }
 
-    public async saveFile(path: string = 'example.docx') {
-        const fs = require('fs');
-        const zip = this.generateZip();
-
-        await zip.generateNodeStream({ 
-            type: 'nodebuffer', 
-            streamFiles: true,
-            compression: "DEFLATE"
-        }).pipe(fs.createWriteStream(path));
-
-    }
 
     private process_roots(): void {
 

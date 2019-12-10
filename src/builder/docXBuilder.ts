@@ -10,7 +10,6 @@ import { PageBreak } from "../component";
 import { DocX } from "../root";
 import { FigureBuilder } from "./figureBuilder";
 
-
 export class DocXBuilder {
     private docx: DocX = new DocX();
     private cov: CoverBuilder;
@@ -23,11 +22,9 @@ export class DocXBuilder {
         return await this.docx.saveBlob(path);
     }
 
-    public async saveFile(path: string = 'example.docx') {
-        if (this.cov) {
-            this.cov.build();
-        }
-        return await this.docx.saveFile(path);
+    public generateZip(): any{
+        if(this.cov) this.cov.build();
+        return this.docx.generateZip();
     }
 
     public cover() {
