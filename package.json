@@ -2,7 +2,7 @@
   "name": "docx",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "build/index.js",
   "scripts": {
     "test": "mocha -r ./node_modules/ts-node/register tests/**/*.test.ts",
     "watch": "mocha -r ./node_modules/ts-node/register  tests/**/*.test.ts --watch --watch-extensions=ts",
@@ -30,9 +30,8 @@
     "rimraf": "^3.0.0",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.4.1",
-    "typescript": "^3.6.3",
+    "typescript": "^3.7.3",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9"
-  },
-  "types": "./build/index.d.ts"
+  }
 }

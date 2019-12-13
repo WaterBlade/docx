@@ -13,7 +13,7 @@ export class DocX {
     public footnotes = new Footnotes();
     public header = new Header();
 
-    public images: { path: string, blob: Blob }[] = [];
+    public images: { path: string, canvas: HTMLCanvasElement }[] = [];
 
     public cover?: Cover;
     public catalog?: Catalog;
@@ -51,22 +51,31 @@ export class DocX {
 
     }
 
-    public generateZip() {
+    public async generateZip() {
         this.process_roots();
         const files = this.generate_files();
         const zip = new JSZip();
         for (let file of files) {
             zip.file(file.path, file.content);
         }
+        const promiseList: Promise<void>[] = [];
         for (const file of this.images) {
-            zip.file(file.path, file.blob);
+            promiseList.push(
+                new Promise(resolve => {
+                    file.canvas.toBlob((blob: Blob) => {
+                        zip.file(file.path, blob);
+                        resolve();
+                    });
+                })
+            );
         }
+        await Promise.all(promiseList);
         return zip;
     }
 
     public async saveBlob(path: string = 'example.docx') {
         const FileSaver = await import('file-saver');
-        const zip = this.generateZip();
+        const zip = await this.generateZip();
 
         const blob = await zip.generateAsync({
             type: "blob",

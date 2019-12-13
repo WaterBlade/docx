@@ -23,14 +23,14 @@ export class FigureBuilder extends Builder{
         this.titleBuilder.text(str);
         return this;
     }
-    public figure(blobData: Blob, width: number, height: number){
+    public content(canvas: HTMLCanvasElement, width: number, height: number){
         const figId = this.docx.images.length + 1;
         const figName = `image${figId}.png`
         // image file in docx
         this.docx.images.push(
             {
-                path: `media/${figName}`,
-                blob: blobData
+                path: `word/media/${figName}`,
+                canvas: canvas
             }
         );
         // rels
