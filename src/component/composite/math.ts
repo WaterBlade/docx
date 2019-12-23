@@ -184,18 +184,43 @@ export class Func extends MathObject{
 
 
 export class NArray extends MathObject{
-    constructor(protected base: XmlObject, protected feature: {
-        name?: string, sub?: XmlObject, sup?: XmlObject, 
-    }={}){
+    private _name?: string;
+    private _sub?: XmlObject;
+    private _sup?: XmlObject;
+    constructor(protected base: XmlObject){
         super();
+    }
+    name(val: string){
+        this._name = val;
+        return this;
+    }
+    sub(obj?: XmlObject){
+        this._sub = obj;
+        return this;
+    }
+    sup(obj?: XmlObject){
+        this._sup = obj;
+        return this;
     }
 
     public toXml(root: Xml){
-        const {name, sub, sup } = this.feature
+        const name = this._name;
+        const sub = this._sub;
+        const sup = this._sup;
+
+        let limLoc: string = '';
+        if(this._sub && this._sup){
+            limLoc = 'subSup';
+        } else if (this._sub){
+            limLoc = 'sub';
+        } else if (this._sup){
+            limLoc = 'sup';
+        }
 
         root.push(
             E('m:nary').push(
                 E('m:naryPr').push(
+                    limLoc ? E('m:limLoc').attr('m:val',limLoc) : null,
                     name ? E('m:chr').attr('m:val', name) : null,
                     sub ? null : E('m:subHide').attr('m:val', 'on'),
                     sup ? null : E('m:supHide').attr('m:val', 'on'),
